@@ -1,0 +1,6 @@
+{
+  "name": "Self-Healing GraphRAG CTI",
+  "description": "Full-stack cybersecurity threat intelligence platform featuring real-time Red Team vulnerability injection, interactive threat graph visualization, and Gemini-powered self-healing GraphRAG.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
