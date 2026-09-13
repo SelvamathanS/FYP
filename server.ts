@@ -1,15 +1,18 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
+import neo4j from 'neo4j-driver';
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+const NEO4J_URI = process.env.NEO4J_URI || '';
+const NEO4J_USERNAME = process.env.NEO4J_USERNAME || '';
+const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || '';
 
-  app.use(express.json());
+let driver: neo4j.Driver | null = null;
+if (NEO4J_URI) {
+  driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD));
+}
 
-  // In-memory Graph State mimicking the Python backend's fallback graph_db
-  const graphState: any = {
+const DEFAULT_GRAPH_STATE = {
     nodes: [
       { id: 'APT29', properties: { label: 'ThreatActor', name: 'APT29 (Cozy Bear)', description: 'Russian state-sponsored advanced persistent threat actor', dataset: 'MITRE ATT&CK' } },
       { id: 'Lazarus', properties: { label: 'ThreatActor', name: 'Lazarus Group', description: 'North Korean cyber threat group', dataset: 'MITRE ATT&CK' } },
@@ -66,22 +69,102 @@ async function startServer() {
       { from: 'CVE-2021-41773', to: 'Patch Apache 2.4.51', label: 'HAS_MITIGATION' },
       { from: 'CVE-2023-23397', to: 'MFA Enforced', label: 'HAS_MITIGATION' }
     ]
-  };
+};
 
-  // Keep track of WS clients
-  let wsClients: any[] = [];
-  // Since we can't easily do WebSocket upgrades on the same port in Express without a custom HTTP server, 
-  // we'll let Vite handle WS for now or just skip actual WS broadcast if not requested, but wait, 
-  // the frontend connects to `ws://${window.location.host}/api/user/ws`. 
-  // Let's implement a simple HTTP long-polling or just ignore it since it's just a demo.
-  // Actually, Express-WS can be used, but we don't have it. We can just mock the WS.
+// Fallback in-memory state if Neo4j is not connected or failing
+let inMemoryState = JSON.parse(JSON.stringify(DEFAULT_GRAPH_STATE));
+
+async function getGraphState() {
+  if (!driver) return inMemoryState;
   
+  const session = driver.session();
+  try {
+    const result = await session.run(`MATCH (n) OPTIONAL MATCH (n)-[r]->(m) RETURN n, r, m`);
+    
+    if (result.records.length === 0) {
+      // Seed Database
+      await saveGraphState(DEFAULT_GRAPH_STATE);
+      return DEFAULT_GRAPH_STATE;
+    }
+
+    const nodesMap = new Map();
+    const edgesMap = new Map();
+
+    result.records.forEach(record => {
+      const n = record.get('n');
+      if (n) {
+        nodesMap.set(n.properties.id, { id: n.properties.id, properties: n.properties });
+      }
+      const r = record.get('r');
+      const m = record.get('m');
+      if (r && m) {
+        const edgeId = `${n.properties.id}-${r.type}-${m.properties.id}`;
+        edgesMap.set(edgeId, { from: n.properties.id, to: m.properties.id, label: r.type });
+        nodesMap.set(m.properties.id, { id: m.properties.id, properties: m.properties });
+      }
+    });
+
+    return {
+      nodes: Array.from(nodesMap.values()),
+      edges: Array.from(edgesMap.values())
+    };
+  } catch (error) {
+    console.error('Neo4j read error, falling back to memory:', error);
+    return inMemoryState;
+  } finally {
+    await session.close();
+  }
+}
+
+async function saveGraphState(state: any) {
+  if (!driver) {
+    inMemoryState = state;
+    return;
+  }
+  
+  const session = driver.session();
+  try {
+    // Basic sync: clear and rewrite for this demo
+    await session.run('MATCH (n) DETACH DELETE n');
+    
+    for (const node of state.nodes) {
+      const label = node.properties.label || 'Node';
+      // Use parameterized query for safety and correct types
+      await session.run(
+        `CREATE (n:${label} $props)`,
+        { props: { ...node.properties, id: node.id } }
+      );
+    }
+    
+    for (const edge of state.edges) {
+      await session.run(
+        `MATCH (a {id: $from}), (b {id: $to}) CREATE (a)-[r:${edge.label}]->(b)`,
+        { from: edge.from, to: edge.to }
+      );
+    }
+    inMemoryState = state; // Keep memory in sync
+  } catch (error) {
+    console.error('Neo4j write error:', error);
+    inMemoryState = state;
+  } finally {
+    await session.close();
+  }
+}
+
+async function startServer() {
+  const app = express();
+  const PORT = 3000;
+
+  app.use(express.json());
+
   // API Routes
-  app.get('/api/user/graph', (req, res) => {
+  app.get('/api/user/graph', async (req, res) => {
+    const graphState = await getGraphState();
     res.json(graphState);
   });
 
-  app.post('/api/hacker/inject', (req, res) => {
+  app.post('/api/hacker/inject', async (req, res) => {
+    const graphState = await getGraphState();
     const { vuln_name, target_software, description } = req.body;
     
     // Inject node
@@ -108,10 +191,12 @@ async function startServer() {
       label: 'AFFECTS'
     });
 
+    await saveGraphState(graphState);
     res.json({ status: "success", details: { vulnerability: vuln_name, target_software } });
   });
 
-  app.post('/api/user/chat', (req, res) => {
+  app.post('/api/user/chat', async (req, res) => {
+    const graphState = await getGraphState();
     const { query } = req.body;
     const queryLower = query.toLowerCase();
     
@@ -207,6 +292,8 @@ async function startServer() {
       replyText += `**⚙️ Steps Taken by Agent:**\n1. Traversed graph to identify affected node: \`${affected}\`.\n2. Queried NVD API for recommended mitigations.\n3. Synthesized patch script configuration.\n4. Applied virtual patch to ingress firewall rules.\n\n`;
       replyText += `**📝 Changed Items:**\n- Added \`${patch_name}\` to Mitigation controls.\n- Edges updated: \`${vuln_name} -> HAS_MITIGATION -> ${patch_name}\`\n- Risk Status changed to **SELF_HEALED**.\n\n`;
       replyText += `The network topology has been updated to reflect the new secured state.`;
+
+      await saveGraphState(graphState);
 
       const logs = [
         `⚡ [Step 1: Agentic Reflection] Received 'fix' command for ${vuln_name}.`,

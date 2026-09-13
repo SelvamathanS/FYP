@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "GraphState": {
+      "title": "GraphState",
+      "description": "The current state of the knowledge graph including nodes and edges.",
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "description": "List of nodes in the graph."
+        },
+        "edges": {
+          "type": "array",
+          "description": "List of edges connecting nodes in the graph."
+        }
+      },
+      "required": ["nodes", "edges"]
+    }
+  },
+  "firestore": {
+    "graph/{docId}": {
+      "schema": "GraphState",
+      "description": "Stores the entire graph state."
+    }
+  }
+}

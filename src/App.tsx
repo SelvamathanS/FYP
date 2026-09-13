@@ -74,17 +74,18 @@ export default function App() {
       const res = await fetch('/api/user/graph');
       const data = await res.json();
       if (data && data.nodes) {
-        let offsets: Record<string, number> = { ThreatActor: 0, Malware: 0, Vulnerability: 0, Software: 0, Mitigation: 0 };
+        let offsets: Record<string, number> = { ThreatActor: 0, Technique: 0, Malware: 0, Vulnerability: 0, Software: 0, Mitigation: 0 };
         const typedNodes = data.nodes.map((n: any) => {
            let cx = 100;
            let cy = 100;
            const lbl = n.properties.label;
            
            if (lbl === 'ThreatActor') { cx = 100; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
-           else if (lbl === 'Malware') { cx = 280; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
-           else if (lbl === 'Vulnerability') { cx = 460; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
-           else if (lbl === 'Software') { cx = 640; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
-           else if (lbl === 'Mitigation') { cx = 820; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
+           else if (lbl === 'Technique') { cx = 300; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
+           else if (lbl === 'Malware') { cx = 500; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
+           else if (lbl === 'Vulnerability') { cx = 700; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
+           else if (lbl === 'Software') { cx = 900; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
+           else if (lbl === 'Mitigation') { cx = 1100; cy = 100 + (offsets[lbl] * 110); offsets[lbl]++; }
            else { cx = 400 + Math.random() * 100; cy = 400 + Math.random() * 100; }
            
            return {
