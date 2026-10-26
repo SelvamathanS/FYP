@@ -21,19 +21,24 @@ class VectorDBManager:
         self.mock_store = []
         
         if HAS_CHROMA:
-            try:
-                # Connect to user's ChromaDB Cloud instance
-                self.client = chromadb.CloudClient(
-                    api_key='ck-277vUEoZ8oCdK2eu4aU6raF1BqdcLyr6YKCr3ZCm5LXJ',
-                    tenant='6bcb3a40-0023-43a0-a7f2-0e3cc4d3d5fb',
-                    database='Mathan'
-                )
-                self.collection = self.client.get_or_create_collection(name="cti_reports")
-                self.is_connected = True
-                self._seed_initial_data()
-                logger.info("ChromaDB initialized and seeded.")
-            except Exception as e:
-                logger.error(f"Failed to init ChromaDB: {e}")
+            chroma_key = os.getenv("CHROMA_API_KEY")
+            chroma_tenant = os.getenv("CHROMA_TENANT", "default_tenant")
+            chroma_database = os.getenv("CHROMA_DATABASE", "default_database")
+            if chroma_key:
+                try:
+                    self.client = chromadb.CloudClient(
+                        api_key=chroma_key,
+                        tenant=chroma_tenant,
+                        database=chroma_database
+                    )
+                    self.collection = self.client.get_or_create_collection(name="cti_reports")
+                    self.is_connected = True
+                    self._seed_initial_data()
+                    logger.info("ChromaDB Cloud initialized and seeded.")
+                except Exception as e:
+                    logger.error(f"Failed to init ChromaDB Cloud: {e}")
+                    self._seed_initial_data()
+            else:
                 self._seed_initial_data()
         else:
             self._seed_initial_data()

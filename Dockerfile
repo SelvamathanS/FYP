@@ -1,22 +1,41 @@
-FROM python:3.10-slim
+# Production Multi-Stage Dockerfile for Self-Healing GraphRAG CTI Platform
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# System dependencies for native Python packages if needed
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copy dependency manifests
+COPY package.json package-lock.json ./
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies (clean install)
+RUN npm ci
 
-# Copy application and pre-built frontend (if any)
+# Copy application sources
 COPY . .
 
-# Expose standard FastAPI port
-EXPOSE 8000
+# Build Vite frontend & Bundle Express TypeScript backend into dist/server.cjs
+RUN npm run build
 
-# Run Uvicorn server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run automated system verification test suite to ensure release integrity
+RUN npm test
+
+# Production Runtime Image
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Copy built artifacts and runtime manifests
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/data ./data
+COPY --from=builder /app/public ./public
+
+# Expose HTTP service port
+EXPOSE 3000
+
+# Start production server
+CMD ["node", "dist/server.cjs"]

@@ -10,13 +10,23 @@ from app.auth import init_auth_db
 
 app = FastAPI(title="Self-Healing GraphRAG CTI Platform")
 
-# CORS for local Vite dev server interaction
+# CORS configured with explicit safe origins
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+allowed_origins = [orig.strip() for orig in allowed_origins_env.split(",") if orig.strip()]
+if not allowed_origins:
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173"
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
 
 # API Routers

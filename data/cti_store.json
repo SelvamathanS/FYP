@@ -1,0 +1,972 @@
+{
+  "documents": [
+    [
+      "CTI-DOC-001",
+      {
+        "documentId": "CTI-DOC-001",
+        "title": "SYNTHETIC: APT29 Initial Infrastructure Incursion & PostgreSQL Exploitation",
+        "source": "National Cyber Security Advisory Feed (Synthetic)",
+        "sourceType": "REPORT",
+        "publishedAt": "2026-08-11T09:31:35.390Z",
+        "observedAt": "2026-08-09T09:31:35.390Z",
+        "ingestedAt": "2026-09-28T09:31:35.391Z",
+        "lastSeenAt": "2026-08-11T09:31:35.390Z",
+        "confidence": 0.92,
+        "sourceReliability": "HIGH",
+        "classification": "INTERNAL",
+        "contentHash": "hash-1790587895391-uq2jta",
+        "status": "ACTIVE",
+        "rawText": "[SYNTHETIC THREAT INTELLIGENCE ADVISORY - NOT A REAL EXPLOIT]\nThreat Actor: APT29 (also tracked as Cozy Bear, Midnight Blizzard)\nCampaign: Strategic Corporate Database Reconnaissance\nTechnique: T1190 (Exploit Public-Facing Application)\nVulnerability: CVE-2023-39417 (PostgreSQL SQL Injection & Dynamic Execution)\nTarget System: Computer 07 (Customer Database, running PostgreSQL on port 5432)\n\nSummary:\nIntelligence indicators confirm threat actor APT29 has actively utilized technique T1190 to exploit public-facing PostgreSQL interfaces. Incursion traces identify targeted SQL parameter tampering affecting Computer 07. The adversary bypasses input validation using dynamic SQL concatenation.",
+        "extractedEntitiesCount": 5,
+        "extractedRelationsCount": 3
+      }
+    ],
+    [
+      "CTI-DOC-002",
+      {
+        "documentId": "CTI-DOC-002",
+        "title": "SYNTHETIC: Cross-Campaign Lateral Movement & Java Log4j Exploitation",
+        "source": "Commercial SOC Incident Response Dispatch (Synthetic)",
+        "sourceType": "INCIDENT",
+        "publishedAt": "2026-09-14T09:31:35.390Z",
+        "observedAt": "2026-09-13T09:31:35.390Z",
+        "ingestedAt": "2026-09-28T09:31:35.395Z",
+        "lastSeenAt": "2026-09-14T09:31:35.390Z",
+        "confidence": 0.88,
+        "sourceReliability": "HIGH",
+        "classification": "RESTRICTED",
+        "contentHash": "hash-1790587895395-ej1opy",
+        "status": "ACTIVE",
+        "rawText": "[SYNTHETIC THREAT INTELLIGENCE INCIDENT REPORT - NOT A REAL EXPLOIT]\nThreat Actor: APT29 (Cozy Bear) and FIN7 Syndicate\nTechniques: T1190 (Exploit Public-Facing Application), T1059 (Command and Scripting Interpreter)\nVulnerabilities: CVE-2021-44228 (Log4Shell / Spring Boot JNDI RCE)\nTarget Systems: Computer 14 (Employee Management, Java Spring Boot port 8080) and Computer 07\n\nSummary:\nTelemetry corroborates APT29 continuing exploitation of public-facing endpoints via T1190. Additionally, the group leverages command interpreter T1059 to trigger remote JNDI lookups via Log4Shell (CVE-2021-44228) against Computer 14. \nClaim: Host Computer 14 remains vulnerable and unmitigated.",
+        "extractedEntitiesCount": 9,
+        "extractedRelationsCount": 12
+      }
+    ],
+    [
+      "CTI-DOC-003",
+      {
+        "documentId": "CTI-DOC-003",
+        "title": "SYNTHETIC: Authoritative Security Patch Advisory & Mitigation Reconciliation",
+        "source": "Vendor Emergency Security Bulletin & SRE Verification (Synthetic)",
+        "sourceType": "ADVISORY",
+        "publishedAt": "2026-09-27T09:31:35.390Z",
+        "observedAt": "2026-09-27T09:31:35.390Z",
+        "ingestedAt": "2026-09-28T09:31:35.398Z",
+        "lastSeenAt": "2026-09-27T09:31:35.390Z",
+        "confidence": 0.98,
+        "sourceReliability": "HIGH",
+        "classification": "PUBLIC",
+        "contentHash": "hash-1790587895398-5a02nf",
+        "status": "ACTIVE",
+        "rawText": "[SYNTHETIC VENDOR SECURITY ADVISORY & MITIGATION BULLETIN]\nVulnerability: CVE-2021-44228 (Log4Shell)\nMitigation: Mitigation-Java-14 (Autonomous JNDI Lookup Lockdown & Spring Security Patch)\nTarget System: Computer 14 (Employee Management)\n\nSummary & Contradiction Resolution:\nOfficial vendor advisory verifies that Computer 14 has enforced complete JNDI lookup disabling and log4j-core 2.17.1 security patches. \nContradiction Claim: Prior reports asserting Computer 14 is unmitigated are now SUPERSEDED. Host Computer 14 is fully patched, verified healthy, and immune to CVE-2021-44228.",
+        "extractedEntitiesCount": 4,
+        "extractedRelationsCount": 4
+      }
+    ],
+    [
+      "TEST-CTI-DISJOINT",
+      {
+        "documentId": "TEST-CTI-DISJOINT",
+        "title": "Disjoint Multi-Sentence Threat Advisory",
+        "source": "Threat Intelligence Ingestion Engine [PLAIN_TEXT]",
+        "sourceType": "REPORT",
+        "publishedAt": "2026-09-28T09:52:45.836Z",
+        "observedAt": "2026-09-28T09:52:45.836Z",
+        "ingestedAt": "2026-09-28T09:52:45.836Z",
+        "lastSeenAt": "2026-09-28T09:52:45.836Z",
+        "confidence": 0.88,
+        "sourceReliability": "HIGH",
+        "classification": "INTERNAL",
+        "contentHash": "hash-1790589165836-a2zrs6",
+        "status": "ACTIVE",
+        "rawText": "\n      Advanced Persistent Threat group APT29 used technique T1059 for command execution in recent campaigns.\n      A distinct zero-day disclosure discusses CVE-2023-9999 affecting obsolete unmonitored devices.\n      Computer 07 telemetry recorded standard periodic backup completion at 04:00 UTC.\n    ",
+        "extractedEntitiesCount": 4,
+        "extractedRelationsCount": 1
+      }
+    ]
+  ],
+  "entities": [
+    [
+      "CVE-2023-39417",
+      {
+        "canonicalId": "CVE-2023-39417",
+        "displayName": "CVE-2023-39417",
+        "entityType": "Vulnerability",
+        "aliases": [
+          "CVE-2023-39417",
+          "CVE-2023-39417"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-001"
+        ],
+        "confidence": 0.98,
+        "firstSeen": "2026-08-11T09:31:35.390Z",
+        "lastSeen": "2026-08-11T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "T1190",
+      {
+        "canonicalId": "T1190",
+        "displayName": "T1190 (Exploit Public-Facing Application)",
+        "entityType": "Technique",
+        "aliases": [
+          "T1190"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-001",
+          "CTI-DOC-002"
+        ],
+        "confidence": 0.99,
+        "mitreId": "T1190",
+        "mitreConfidence": "CONFIRMED",
+        "firstSeen": "2026-08-11T09:31:35.390Z",
+        "lastSeen": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "Computer 07",
+      {
+        "canonicalId": "Computer 07",
+        "displayName": "Computer 07",
+        "entityType": "Computer",
+        "aliases": [
+          "Computer 07",
+          "COMP-07",
+          "Computer 07"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-001",
+          "CTI-DOC-002",
+          "TEST-CTI-DISJOINT"
+        ],
+        "confidence": 1,
+        "firstSeen": "2026-08-11T09:31:35.390Z",
+        "lastSeen": "2026-09-28T09:52:45.836Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "APT29",
+      {
+        "canonicalId": "APT29",
+        "displayName": "APT29 (Cozy Bear)",
+        "entityType": "ThreatActor",
+        "aliases": [
+          "APT29",
+          "APT29"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-001",
+          "CTI-DOC-002",
+          "TEST-CTI-DISJOINT"
+        ],
+        "confidence": 1,
+        "firstSeen": "2026-08-11T09:31:35.390Z",
+        "lastSeen": "2026-09-28T09:52:45.836Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "PostgreSQL",
+      {
+        "canonicalId": "PostgreSQL",
+        "displayName": "PostgreSQL",
+        "entityType": "Software",
+        "aliases": [
+          "PostgreSQL"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-001"
+        ],
+        "confidence": 0.9,
+        "firstSeen": "2026-08-11T09:31:35.390Z",
+        "lastSeen": "2026-08-11T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "CVE-2021-44228",
+      {
+        "canonicalId": "CVE-2021-44228",
+        "displayName": "CVE-2021-44228",
+        "entityType": "Vulnerability",
+        "aliases": [
+          "CVE-2021-44228",
+          "CVE-2021-44228"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "CTI-DOC-003"
+        ],
+        "confidence": 1,
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "T1059",
+      {
+        "canonicalId": "T1059",
+        "displayName": "T1059 (Command and Scripting Interpreter)",
+        "entityType": "Technique",
+        "aliases": [
+          "T1059"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "TEST-CTI-DISJOINT"
+        ],
+        "confidence": 1,
+        "mitreId": "T1059",
+        "mitreConfidence": "CONFIRMED",
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-28T09:52:45.836Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "Computer 14",
+      {
+        "canonicalId": "Computer 14",
+        "displayName": "Computer 14",
+        "entityType": "Computer",
+        "aliases": [
+          "Computer 14",
+          "COMP-14",
+          "Computer 14"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "CTI-DOC-003"
+        ],
+        "confidence": 1,
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "FIN7",
+      {
+        "canonicalId": "FIN7",
+        "displayName": "FIN7 Syndicate",
+        "entityType": "ThreatActor",
+        "aliases": [
+          "FIN7",
+          "FIN7"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "confidence": 0.92,
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "Log4Shell",
+      {
+        "canonicalId": "Log4Shell",
+        "displayName": "Log4Shell",
+        "entityType": "Vulnerability",
+        "aliases": [
+          "Log4Shell"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "CTI-DOC-003"
+        ],
+        "confidence": 0.9500000000000001,
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "Spring Boot",
+      {
+        "canonicalId": "Spring Boot",
+        "displayName": "Spring Boot",
+        "entityType": "Software",
+        "aliases": [
+          "Spring Boot"
+        ],
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "CTI-DOC-003"
+        ],
+        "confidence": 0.9500000000000001,
+        "firstSeen": "2026-09-14T09:31:35.390Z",
+        "lastSeen": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ],
+    [
+      "CVE-2023-9999",
+      {
+        "canonicalId": "CVE-2023-9999",
+        "displayName": "CVE-2023-9999",
+        "entityType": "Vulnerability",
+        "aliases": [
+          "CVE-2023-9999",
+          "CVE-2023-9999"
+        ],
+        "sourceDocumentIds": [
+          "TEST-CTI-DISJOINT"
+        ],
+        "confidence": 1,
+        "firstSeen": "2026-09-28T09:37:02.633Z",
+        "lastSeen": "2026-09-28T09:52:45.836Z",
+        "temporalStatus": "ACTIVE"
+      }
+    ]
+  ],
+  "relationships": [
+    [
+      "APT29-USES-T1190",
+      {
+        "id": "REL-CTI-DOC-001-APT29-USES-T1190",
+        "sourceId": "APT29",
+        "targetId": "T1190",
+        "relationshipType": "USES",
+        "confidence": 0.92,
+        "currentWeight": 0.152,
+        "sourceDocumentIds": [
+          "CTI-DOC-001",
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Advisories link APT29 (Cozy Bear) to technique T1190 (Exploit Public-Facing Application) in section context.",
+        "createdAt": "2026-08-11T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 2,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "T1190-EXPLOITS-CVE-2023-39417",
+      {
+        "id": "REL-CTI-DOC-001-T1190-EXPLOITS-CVE-2023-39417",
+        "sourceId": "T1190",
+        "targetId": "CVE-2023-39417",
+        "relationshipType": "EXPLOITS",
+        "confidence": 0.94,
+        "currentWeight": 0.05,
+        "sourceDocumentIds": [
+          "CTI-DOC-001"
+        ],
+        "evidenceText": "Attack technique T1190 leverages CVE-2023-39417 in section context.",
+        "createdAt": "2026-08-11T09:31:35.390Z",
+        "lastObservedAt": "2026-08-11T09:31:35.390Z",
+        "temporalStatus": "STALE",
+        "corroborationCount": 1,
+        "recencyFactor": 0.05,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "CVE-2023-39417-AFFECTS-Computer 07",
+      {
+        "id": "REL-CTI-DOC-001-CVE-2023-39417-AFFECTS-Computer_07",
+        "sourceId": "CVE-2023-39417",
+        "targetId": "Computer 07",
+        "relationshipType": "AFFECTS",
+        "confidence": 0.95,
+        "currentWeight": 0.05,
+        "sourceDocumentIds": [
+          "CTI-DOC-001"
+        ],
+        "evidenceText": "Security telemetry confirms vulnerability CVE-2023-39417 targets software on Computer 07.",
+        "createdAt": "2026-08-11T09:31:35.390Z",
+        "lastObservedAt": "2026-08-11T09:31:35.390Z",
+        "temporalStatus": "STALE",
+        "corroborationCount": 1,
+        "recencyFactor": 0.05,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "APT29-USES-T1059",
+      {
+        "id": "REL-CTI-DOC-002-APT29-USES-T1059",
+        "sourceId": "APT29",
+        "targetId": "T1059",
+        "relationshipType": "USES",
+        "confidence": 0.92,
+        "currentWeight": 1,
+        "sourceDocumentIds": [
+          "CTI-DOC-002",
+          "TEST-CTI-DISJOINT"
+        ],
+        "evidenceText": "Advisories link APT29 (Cozy Bear) to technique T1059 (Command and Scripting Interpreter) in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-28T09:52:45.836Z",
+        "temporalStatus": "ACTIVE",
+        "corroborationCount": 5,
+        "recencyFactor": 1,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "FIN7-USES-T1190",
+      {
+        "id": "REL-CTI-DOC-002-FIN7-USES-T1190",
+        "sourceId": "FIN7",
+        "targetId": "T1190",
+        "relationshipType": "USES",
+        "confidence": 0.92,
+        "currentWeight": 0.132,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Advisories link FIN7 Syndicate to technique T1190 (Exploit Public-Facing Application) in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "FIN7-USES-T1059",
+      {
+        "id": "REL-CTI-DOC-002-FIN7-USES-T1059",
+        "sourceId": "FIN7",
+        "targetId": "T1059",
+        "relationshipType": "USES",
+        "confidence": 0.92,
+        "currentWeight": 0.132,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Advisories link FIN7 Syndicate to technique T1059 (Command and Scripting Interpreter) in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "T1190-EXPLOITS-CVE-2021-44228",
+      {
+        "id": "REL-CTI-DOC-002-T1190-EXPLOITS-CVE-2021-44228",
+        "sourceId": "T1190",
+        "targetId": "CVE-2021-44228",
+        "relationshipType": "EXPLOITS",
+        "confidence": 0.94,
+        "currentWeight": 0.135,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Attack technique T1190 leverages CVE-2021-44228 in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "T1190-EXPLOITS-Log4Shell",
+      {
+        "id": "REL-CTI-DOC-002-T1190-EXPLOITS-Log4Shell",
+        "sourceId": "T1190",
+        "targetId": "Log4Shell",
+        "relationshipType": "EXPLOITS",
+        "confidence": 0.94,
+        "currentWeight": 0.135,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Attack technique T1190 leverages Log4Shell in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "T1059-EXPLOITS-CVE-2021-44228",
+      {
+        "id": "REL-CTI-DOC-002-T1059-EXPLOITS-CVE-2021-44228",
+        "sourceId": "T1059",
+        "targetId": "CVE-2021-44228",
+        "relationshipType": "EXPLOITS",
+        "confidence": 0.94,
+        "currentWeight": 0.135,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Attack technique T1059 leverages CVE-2021-44228 in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "T1059-EXPLOITS-Log4Shell",
+      {
+        "id": "REL-CTI-DOC-002-T1059-EXPLOITS-Log4Shell",
+        "sourceId": "T1059",
+        "targetId": "Log4Shell",
+        "relationshipType": "EXPLOITS",
+        "confidence": 0.94,
+        "currentWeight": 0.135,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Attack technique T1059 leverages Log4Shell in section context.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "CVE-2021-44228-AFFECTS-Computer 14",
+      {
+        "id": "REL-CTI-DOC-002-CVE-2021-44228-AFFECTS-Computer_14",
+        "sourceId": "CVE-2021-44228",
+        "targetId": "Computer 14",
+        "relationshipType": "AFFECTS",
+        "confidence": 0.95,
+        "currentWeight": 0.05,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Security telemetry confirms vulnerability CVE-2021-44228 targets software on Computer 14.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "SUPERSEDED",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH",
+        "isSuperseded": true,
+        "conflictStatus": "SUPERSEDED",
+        "conflictId": "CONFLICT-MUL1SUHZ-2SU7"
+      }
+    ],
+    [
+      "CVE-2021-44228-AFFECTS-Computer 07",
+      {
+        "id": "REL-CTI-DOC-002-CVE-2021-44228-AFFECTS-Computer_07",
+        "sourceId": "CVE-2021-44228",
+        "targetId": "Computer 07",
+        "relationshipType": "AFFECTS",
+        "confidence": 0.95,
+        "currentWeight": 0.136,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Security telemetry confirms vulnerability CVE-2021-44228 targets software on Computer 07.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "Log4Shell-AFFECTS-Computer 14",
+      {
+        "id": "REL-CTI-DOC-002-Log4Shell-AFFECTS-Computer_14",
+        "sourceId": "Log4Shell",
+        "targetId": "Computer 14",
+        "relationshipType": "AFFECTS",
+        "confidence": 0.95,
+        "currentWeight": 0.05,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Security telemetry confirms vulnerability Log4Shell targets software on Computer 14.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "SUPERSEDED",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH",
+        "isSuperseded": true,
+        "conflictStatus": "SUPERSEDED",
+        "conflictId": "CONFLICT-MUL1SUHZ-P5AQ"
+      }
+    ],
+    [
+      "Log4Shell-AFFECTS-Computer 07",
+      {
+        "id": "REL-CTI-DOC-002-Log4Shell-AFFECTS-Computer_07",
+        "sourceId": "Log4Shell",
+        "targetId": "Computer 07",
+        "relationshipType": "AFFECTS",
+        "confidence": 0.95,
+        "currentWeight": 0.136,
+        "sourceDocumentIds": [
+          "CTI-DOC-002"
+        ],
+        "evidenceText": "Security telemetry confirms vulnerability Log4Shell targets software on Computer 07.",
+        "createdAt": "2026-09-14T09:31:35.390Z",
+        "lastObservedAt": "2026-09-14T09:31:35.390Z",
+        "temporalStatus": "AGING",
+        "corroborationCount": 1,
+        "recencyFactor": 0.1433,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "Mitigation-Computer14-MITIGATED_BY-CVE-2021-44228",
+      {
+        "id": "REL-CTI-DOC-003-Mitigation-Computer14-MITIGATED_BY-CVE-2021-44228",
+        "sourceId": "Mitigation-Computer14",
+        "targetId": "CVE-2021-44228",
+        "relationshipType": "MITIGATED_BY",
+        "confidence": 0.96,
+        "currentWeight": 0.834,
+        "sourceDocumentIds": [
+          "CTI-DOC-003"
+        ],
+        "evidenceText": "Mitigation patch Mitigation-Computer14 deployed on Computer 14 securing against CVE-2021-44228.",
+        "createdAt": "2026-09-27T09:31:35.390Z",
+        "lastObservedAt": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE",
+        "corroborationCount": 1,
+        "recencyFactor": 0.8688,
+        "sourceReliability": "HIGH"
+      }
+    ],
+    [
+      "Mitigation-Computer14-MITIGATED_BY-Log4Shell",
+      {
+        "id": "REL-CTI-DOC-003-Mitigation-Computer14-MITIGATED_BY-Log4Shell",
+        "sourceId": "Mitigation-Computer14",
+        "targetId": "Log4Shell",
+        "relationshipType": "MITIGATED_BY",
+        "confidence": 0.96,
+        "currentWeight": 0.834,
+        "sourceDocumentIds": [
+          "CTI-DOC-003"
+        ],
+        "evidenceText": "Mitigation patch Mitigation-Computer14 deployed on Computer 14 securing against Log4Shell.",
+        "createdAt": "2026-09-27T09:31:35.390Z",
+        "lastObservedAt": "2026-09-27T09:31:35.390Z",
+        "temporalStatus": "ACTIVE",
+        "corroborationCount": 1,
+        "recencyFactor": 0.8688,
+        "sourceReliability": "HIGH"
+      }
+    ]
+  ],
+  "contradictions": [
+    [
+      "CONFLICT-MUL1SUHZ-2SU7",
+      {
+        "conflictId": "CONFLICT-MUL1SUHZ-2SU7",
+        "subjectId": "CVE-2021-44228",
+        "subjectName": "CVE-2021-44228",
+        "predicate": "AFFECTS",
+        "objectId": "Computer 14",
+        "objectName": "Computer 14",
+        "claimA": {
+          "documentId": "CTI-DOC-002",
+          "statement": "CVE-2021-44228 affects and compromises Computer 14",
+          "assertsPositive": true,
+          "confidence": 0.95,
+          "timestamp": "2026-09-14T09:31:35.390Z",
+          "sourceReliability": "HIGH"
+        },
+        "claimB": {
+          "documentId": "CTI-DOC-003",
+          "statement": "Computer 14 is fully patched and immune to CVE-2021-44228",
+          "assertsPositive": false,
+          "confidence": 0.98,
+          "timestamp": "2026-09-27T09:31:35.390Z",
+          "sourceReliability": "HIGH"
+        },
+        "status": "RESOLVED",
+        "severity": "HIGH",
+        "detectedAt": "2026-09-28T09:31:35.399Z",
+        "resolvedAt": "2026-09-28T09:31:35.399Z",
+        "winningClaim": "B",
+        "resolutionNotes": "Claim B from CTI-DOC-003 supersedes prior claim A: authoritative mitigation/patch bulletin verified (HIGH reliability, +13 days)."
+      }
+    ],
+    [
+      "CONFLICT-MUL1SUHZ-P5AQ",
+      {
+        "conflictId": "CONFLICT-MUL1SUHZ-P5AQ",
+        "subjectId": "Log4Shell",
+        "subjectName": "Log4Shell",
+        "predicate": "AFFECTS",
+        "objectId": "Computer 14",
+        "objectName": "Computer 14",
+        "claimA": {
+          "documentId": "CTI-DOC-002",
+          "statement": "Log4Shell affects and compromises Computer 14",
+          "assertsPositive": true,
+          "confidence": 0.95,
+          "timestamp": "2026-09-14T09:31:35.390Z",
+          "sourceReliability": "HIGH"
+        },
+        "claimB": {
+          "documentId": "CTI-DOC-003",
+          "statement": "Computer 14 is fully patched and immune to Log4Shell",
+          "assertsPositive": false,
+          "confidence": 0.98,
+          "timestamp": "2026-09-27T09:31:35.390Z",
+          "sourceReliability": "HIGH"
+        },
+        "status": "RESOLVED",
+        "severity": "HIGH",
+        "detectedAt": "2026-09-28T09:31:35.399Z",
+        "resolvedAt": "2026-09-28T09:31:35.399Z",
+        "winningClaim": "B",
+        "resolutionNotes": "Claim B from CTI-DOC-003 supersedes prior claim A: authoritative mitigation/patch bulletin verified (HIGH reliability, +13 days)."
+      }
+    ]
+  ],
+  "timelineEvents": [
+    {
+      "id": "EVT-1790589165841-REL-CORROB",
+      "timestamp": "2026-09-28T09:52:45.836Z",
+      "eventType": "RELATION_CORROBORATED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "relationId": "APT29-USES-T1059",
+      "title": "Relationship Corroborated: APT29 USES T1059",
+      "description": "Corroborated across 5 independent documents. Dynamic weight: 1."
+    },
+    {
+      "id": "EVT-1790589165836-INGEST",
+      "timestamp": "2026-09-28T09:52:45.836Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "title": "Ingested CTI Report: Disjoint Multi-Sentence Threat Advisory",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790588322257-REL-CORROB",
+      "timestamp": "2026-09-28T09:38:42.252Z",
+      "eventType": "RELATION_CORROBORATED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "relationId": "APT29-USES-T1059",
+      "title": "Relationship Corroborated: APT29 USES T1059",
+      "description": "Corroborated across 4 independent documents. Dynamic weight: 1."
+    },
+    {
+      "id": "EVT-1790588322252-INGEST",
+      "timestamp": "2026-09-28T09:38:42.252Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "title": "Ingested CTI Report: Disjoint Multi-Sentence Threat Advisory",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790588243079-REL-CORROB",
+      "timestamp": "2026-09-28T09:37:23.074Z",
+      "eventType": "RELATION_CORROBORATED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "relationId": "APT29-USES-T1059",
+      "title": "Relationship Corroborated: APT29 USES T1059",
+      "description": "Corroborated across 3 independent documents. Dynamic weight: 1."
+    },
+    {
+      "id": "EVT-1790588243074-INGEST",
+      "timestamp": "2026-09-28T09:37:23.074Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "title": "Ingested CTI Report: Disjoint Multi-Sentence Threat Advisory",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790588222637-REL-CORROB",
+      "timestamp": "2026-09-28T09:37:02.633Z",
+      "eventType": "RELATION_CORROBORATED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "relationId": "APT29-USES-T1059",
+      "title": "Relationship Corroborated: APT29 USES T1059",
+      "description": "Corroborated across 2 independent documents. Dynamic weight: 1."
+    },
+    {
+      "id": "EVT-1790588222635-ENT-CVE-2023-9999",
+      "timestamp": "2026-09-28T09:37:02.633Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "entityId": "CVE-2023-9999",
+      "title": "Entity Normalized: CVE-2023-9999 (Vulnerability)",
+      "description": "Discovered and registered canonical identity with 98% baseline confidence."
+    },
+    {
+      "id": "EVT-1790588222633-INGEST",
+      "timestamp": "2026-09-28T09:37:02.633Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "TEST-CTI-DISJOINT",
+      "title": "Ingested CTI Report: Disjoint Multi-Sentence Threat Advisory",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790587895399-SUPERSEDE",
+      "timestamp": "2026-09-28T09:31:35.398Z",
+      "eventType": "INTELLIGENCE_SUPERSEDED",
+      "documentId": "CTI-DOC-003",
+      "conflictId": "CONFLICT-MUL1SUHZ-P5AQ",
+      "title": "Intelligence Superseded: Log4Shell Affects Computer 14",
+      "description": "Claim B from CTI-DOC-003 supersedes prior claim A: authoritative mitigation/patch bulletin verified (HIGH reliability, +13 days)."
+    },
+    {
+      "id": "EVT-1790587895399-SUPERSEDE",
+      "timestamp": "2026-09-28T09:31:35.398Z",
+      "eventType": "INTELLIGENCE_SUPERSEDED",
+      "documentId": "CTI-DOC-003",
+      "conflictId": "CONFLICT-MUL1SUHZ-2SU7",
+      "title": "Intelligence Superseded: CVE-2021-44228 Affects Computer 14",
+      "description": "Claim B from CTI-DOC-003 supersedes prior claim A: authoritative mitigation/patch bulletin verified (HIGH reliability, +13 days)."
+    },
+    {
+      "id": "EVT-1790587895398-INGEST",
+      "timestamp": "2026-09-28T09:31:35.398Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "CTI-DOC-003",
+      "title": "Ingested CTI Report: SYNTHETIC: Authoritative Security Patch Advisory & Mitigation Reconciliation",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790587895397-REL-CORROB",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "RELATION_CORROBORATED",
+      "documentId": "CTI-DOC-002",
+      "relationId": "APT29-USES-T1190",
+      "title": "Relationship Corroborated: APT29 USES T1190",
+      "description": "Corroborated across 2 independent documents. Dynamic weight: 0.766."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-Spring Boot",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "Spring Boot",
+      "title": "Entity Normalized: Spring Boot (Software)",
+      "description": "Discovered and registered canonical identity with 90% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-Log4Shell",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "Log4Shell",
+      "title": "Entity Normalized: Log4Shell (Vulnerability)",
+      "description": "Discovered and registered canonical identity with 90% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-FIN7",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "FIN7",
+      "title": "Entity Normalized: FIN7 Syndicate (ThreatActor)",
+      "description": "Discovered and registered canonical identity with 92% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-Computer 14",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "Computer 14",
+      "title": "Entity Normalized: Computer 14 (Computer)",
+      "description": "Discovered and registered canonical identity with 95% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-T1059",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "T1059",
+      "title": "Entity Normalized: T1059 (Command and Scripting Interpreter) (Technique)",
+      "description": "Discovered and registered canonical identity with 94% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895396-ENT-CVE-2021-44228",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-002",
+      "entityId": "CVE-2021-44228",
+      "title": "Entity Normalized: CVE-2021-44228 (Vulnerability)",
+      "description": "Discovered and registered canonical identity with 98% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895395-INGEST",
+      "timestamp": "2026-09-28T09:31:35.395Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "CTI-DOC-002",
+      "title": "Ingested CTI Report: SYNTHETIC: Cross-Campaign Lateral Movement & Java Log4j Exploitation",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    },
+    {
+      "id": "EVT-1790587895393-ENT-PostgreSQL",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-001",
+      "entityId": "PostgreSQL",
+      "title": "Entity Normalized: PostgreSQL (Software)",
+      "description": "Discovered and registered canonical identity with 90% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895393-ENT-APT29",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-001",
+      "entityId": "APT29",
+      "title": "Entity Normalized: APT29 (Cozy Bear) (ThreatActor)",
+      "description": "Discovered and registered canonical identity with 92% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895393-ENT-Computer 07",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-001",
+      "entityId": "Computer 07",
+      "title": "Entity Normalized: Computer 07 (Computer)",
+      "description": "Discovered and registered canonical identity with 95% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895393-ENT-T1190",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-001",
+      "entityId": "T1190",
+      "title": "Entity Normalized: T1190 (Exploit Public-Facing Application) (Technique)",
+      "description": "Discovered and registered canonical identity with 94% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895393-ENT-CVE-2023-39417",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "ENTITY_DISCOVERED",
+      "documentId": "CTI-DOC-001",
+      "entityId": "CVE-2023-39417",
+      "title": "Entity Normalized: CVE-2023-39417 (Vulnerability)",
+      "description": "Discovered and registered canonical identity with 98% baseline confidence."
+    },
+    {
+      "id": "EVT-1790587895391-INGEST",
+      "timestamp": "2026-09-28T09:31:35.391Z",
+      "eventType": "DOCUMENT_INGESTED",
+      "documentId": "CTI-DOC-001",
+      "title": "Ingested CTI Report: SYNTHETIC: APT29 Initial Infrastructure Incursion & PostgreSQL Exploitation",
+      "description": "Format [PLAIN_TEXT] parsed into knowledge graph pipeline with HIGH reliability."
+    }
+  ]
+}

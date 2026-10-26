@@ -15,7 +15,11 @@ from typing import Optional, Dict, Any
 
 # Environment variables with safe defaults
 DB_PATH = os.getenv("AUTH_DB_PATH", os.path.join(os.path.dirname(__file__), "cti_auth.db"))
-JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-cyber-threat-intel-key-change-in-production")
+JWT_SECRET = os.getenv("JWT_SECRET", "")
+if not JWT_SECRET:
+    if os.getenv("ENVIRONMENT") == "production" or os.getenv("NODE_ENV") == "production":
+        raise ValueError("JWT_SECRET environment variable is mandatory in production environment.")
+    JWT_SECRET = "dev-ephemeral-jwt-secret-for-local-testing-only"
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
